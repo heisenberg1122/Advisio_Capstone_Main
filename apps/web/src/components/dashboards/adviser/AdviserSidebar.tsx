@@ -1,47 +1,52 @@
 import { NavItem } from "@/components/shared/NavItem";
 import { UserChip } from "@/components/shared/UserChip";
-import { studentMockData } from "@/lib/mock-data/student";
 
 const NAV_SECTIONS = [
   {
     label: "Main",
     items: [
-      { href: "/student/dashboard",    icon: "ti-layout-dashboard", label: "Dashboard" },
-      { href: "/student/groups",       icon: "ti-users",            label: "My group" },
-      { href: "/student/adviser-pool", icon: "ti-user-check",       label: "Adviser pool" },
+      { href: "/adviser/dashboard",    icon: "ti-layout-dashboard", label: "Dashboard" },
+      { href: "/adviser/advisees",     icon: "ti-users",            label: "Advisees" },
     ],
   },
   {
     label: "Work",
     items: [
-      { href: "/student/submissions",   icon: "ti-upload",   label: "Submissions" },
-      { href: "/student/consultations", icon: "ti-messages", label: "Consultations" },
+      { href: "/adviser/requests",     icon: "ti-git-pull-request", label: "Milestone Requests" },
+      { href: "/adviser/reviews",      icon: "ti-file-text",        label: "Document Reviews" },
     ],
   },
   {
-    label: "Progress",
+    label: "Consultations",
     items: [
-      { href: "/student/defense",       icon: "ti-shield-check", label: "Defense center" },
-      { href: "/student/grades",        icon: "ti-star",         label: "Grades" },
-      { href: "/student/notifications", icon: "ti-bell",         label: "Notifications" },
+      { href: "/adviser/consultations",icon: "ti-calendar-event",   label: "Schedule & History" },
     ],
   },
   {
     label: "Account",
     items: [
-      { href: "/student/settings", icon: "ti-settings", label: "Settings" },
+      { href: "/adviser/tasks",        icon: "ti-checkbox",         label: "Tasks" },
+      { href: "/adviser/announcements",icon: "ti-speakerphone",      label: "Announcements" },
     ],
   },
 ];
 
-export function StudentSidebar() {
-  const { profile } = studentMockData.overview;
+export function AdviserSidebar() {
+  const profile = {
+    id: "adviser-001",
+    name: "Dr. Rachel Lim",
+    initials: "RL",
+    role: "adviser",
+    academicYear: "AY 2025–2026",
+    program: "Capstone",
+    college: "CCS",
+  };
 
   return (
     <aside
       className="flex flex-col border-r border-[var(--color-border-tertiary)]"
       style={{ background: "var(--color-background-primary)" }}
-      aria-label="Student navigation"
+      aria-label="Adviser navigation"
     >
       {/* Logo */}
       <div className="px-4 py-5 border-b border-[var(--color-border-tertiary)]">
@@ -75,7 +80,7 @@ export function StudentSidebar() {
 
       {/* User chip */}
       <div className="p-4 border-t border-[var(--color-border-tertiary)]">
-        <UserChip profile={profile} />
+        <UserChip profile={profile as any} />
       </div>
     </aside>
   );

@@ -3,20 +3,18 @@
 import { usePathname } from "next/navigation";
 
 const PAGE_TITLES: Record<string, string> = {
-  "/student/dashboard":    "Dashboard",
-  "/student/groups":       "My group",
-  "/student/adviser-pool": "Adviser pool",
-  "/student/submissions":  "Submissions",
-  "/student/consultations":"Consultations",
-  "/student/defense":      "Defense center",
-  "/student/grades":       "Grades",
-  "/student/notifications":"Notifications",
-  "/student/settings":     "Settings",
+  "/adviser/dashboard":     "Adviser Dashboard",
+  "/adviser/advisees":      "Assigned Advisees",
+  "/adviser/requests":      "Milestone Requests",
+  "/adviser/consultations": "Consultations",
+  "/adviser/reviews":       "Document Reviews",
+  "/adviser/tasks":         "Tasks Management",
+  "/adviser/announcements": "Announcements",
 };
 
-export function StudentTopbar() {
+export function AdviserTopbar() {
   const pathname = usePathname();
-  const title = PAGE_TITLES[pathname] ?? "Dashboard";
+  const title = PAGE_TITLES[pathname] ?? "Adviser Dashboard";
 
   return (
     <header
