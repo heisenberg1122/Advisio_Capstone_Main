@@ -1,0 +1,277 @@
+@import "tailwindcss";
+
+/* ─── Design Tokens ─────────────────────────────────────────── */
+:root {
+  /* Backgrounds */
+  --color-background-primary:   #0f1117;
+  --color-background-secondary: #161b27;
+  --color-background-tertiary:  #0b0e16;
+
+  --color-background-info:    rgba(59, 130, 246, 0.12);
+  --color-background-success: rgba(34, 197, 94,  0.12);
+  --color-background-warning: rgba(251, 191, 36, 0.12);
+  --color-background-danger:  rgba(239, 68,  68, 0.12);
+
+  /* Borders */
+  --color-border-tertiary:  rgba(255, 255, 255, 0.07);
+  --color-border-secondary: rgba(255, 255, 255, 0.12);
+  --color-border-primary:   rgba(255, 255, 255, 0.18);
+
+  --color-border-info:    rgba(59, 130, 246, 0.4);
+  --color-border-success: rgba(34, 197, 94,  0.4);
+  --color-border-warning: rgba(251, 191, 36, 0.4);
+  --color-border-danger:  rgba(239, 68,  68, 0.4);
+
+  /* Text */
+  --color-text-primary:   #f1f5f9;
+  --color-text-secondary: #94a3b8;
+  --color-text-tertiary:  #475569;
+
+  --color-text-info:    #60a5fa;
+  --color-text-success: #4ade80;
+  --color-text-warning: #fbbf24;
+  --color-text-danger:  #f87171;
+
+  /* Radius */
+  --border-radius-sm: 4px;
+  --border-radius-md: 6px;
+  --border-radius-lg: 10px;
+  --border-radius-xl: 14px;
+
+  /* Font */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* ─── Tailwind v4 Theme Extension ───────────────────────────── */
+@theme inline {
+  --font-sans: var(--font-sans);
+
+  --color-bg-primary:   var(--color-background-primary);
+  --color-bg-secondary: var(--color-background-secondary);
+  --color-bg-tertiary:  var(--color-background-tertiary);
+
+  --color-bg-info:    var(--color-background-info);
+  --color-bg-success: var(--color-background-success);
+  --color-bg-warning: var(--color-background-warning);
+  --color-bg-danger:  var(--color-background-danger);
+
+  --color-border-t: var(--color-border-tertiary);
+  --color-border-s: var(--color-border-secondary);
+
+  --color-text-p: var(--color-text-primary);
+  --color-text-s: var(--color-text-secondary);
+  --color-text-t: var(--color-text-tertiary);
+}
+
+/* ─── Base Styles ───────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--color-background-tertiary);
+  color: var(--color-text-primary);
+  min-height: 100%;
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Scrollbar ─────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border-secondary);
+  border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-border-primary);
+}
+
+/* ─── Tag / Badge Variants ──────────────────────────────────── */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  padding: 2px 7px;
+  border-radius: 99px;
+  gap: 4px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.tag-info    { background: var(--color-background-info);    color: var(--color-text-info); }
+.tag-success { background: var(--color-background-success); color: var(--color-text-success); }
+.tag-warn    { background: var(--color-background-warning); color: var(--color-text-warning); }
+.tag-danger  { background: var(--color-background-danger);  color: var(--color-text-danger); }
+.tag-neutral { background: var(--color-background-secondary); color: var(--color-text-secondary); }
+
+/* ─── Step Pills ────────────────────────────────────────────── */
+.step-pill {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 99px;
+  border: 0.5px solid var(--color-border-tertiary);
+  color: var(--color-text-tertiary);
+}
+.step-pill.done    { background: var(--color-background-success); border-color: var(--color-border-success); color: var(--color-text-success); }
+.step-pill.current { background: var(--color-background-info);    border-color: var(--color-border-info);    color: var(--color-text-info); }
+
+/* ─── Progress Bar ──────────────────────────────────────────── */
+.progress-bar-track {
+  height: 6px;
+  background: var(--color-background-secondary);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.progress-bar-fill {
+  height: 100%;
+  background: var(--color-background-success);
+  border-radius: 99px;
+  background: linear-gradient(90deg, #22c55e, #4ade80);
+  transition: width 0.6s ease;
+}
+
+/* ─── Check Circle ──────────────────────────────────────────── */
+.check-circle {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-border-secondary);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.check-circle.done    { background: var(--color-background-success); border-color: var(--color-border-success); color: var(--color-text-success); }
+.check-circle.pending { background: var(--color-background-warning); border-color: var(--color-border-warning); color: var(--color-text-warning); }
+
+/* ─── Task Check ────────────────────────────────────────────── */
+.task-check {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 1.5px solid var(--color-border-secondary);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.task-check.done { background: var(--color-background-success); border-color: var(--color-border-success); }
+.task-check:hover:not(.done) { border-color: var(--color-border-primary); }
+
+/* ─── Avatar ────────────────────────────────────────────────── */
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--color-background-info);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-info);
+  flex-shrink: 0;
+}
+.avatar-success { background: var(--color-background-success); color: var(--color-text-success); }
+.avatar-warning { background: var(--color-background-warning); color: var(--color-text-warning); }
+.avatar-danger  { background: var(--color-background-danger);  color: var(--color-text-danger); }
+
+/* ─── Icon Button ───────────────────────────────────────────── */
+.icon-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--border-radius-md);
+  border: 0.5px solid var(--color-border-tertiary);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  transition: all 0.12s;
+}
+.icon-btn:hover { background: var(--color-background-secondary); color: var(--color-text-primary); }
+
+.badge-dot { position: relative; }
+.badge-dot::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 7px;
+  height: 7px;
+  background: var(--color-text-danger);
+  border-radius: 50%;
+  border: 1.5px solid var(--color-background-primary);
+}
+
+/* ─── Button ────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--border-radius-md);
+  border: 0.5px solid var(--color-border-secondary);
+  background: transparent;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  transition: all 0.12s;
+  white-space: nowrap;
+}
+.btn:hover { background: var(--color-background-secondary); }
+.btn-primary {
+  background: var(--color-background-info);
+  border-color: var(--color-border-info);
+  color: var(--color-text-info);
+}
+.btn-primary:hover { opacity: 0.85; }
+.btn-sm { padding: 4px 10px; font-size: 12px; }
+
+/* ─── Empty State ───────────────────────────────────────────── */
+.empty {
+  text-align: center;
+  padding: 2rem;
+  color: var(--color-text-tertiary);
+  font-size: 13px;
+}
+
+/* ─── Animations ────────────────────────────────────────────── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.6; }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.25s ease forwards;
+}
+
+.animate-stagger > * {
+  animation: fadeInUp 0.25s ease forwards;
+  opacity: 0;
+}
+.animate-stagger > *:nth-child(1)  { animation-delay: 0.05s; }
+.animate-stagger > *:nth-child(2)  { animation-delay: 0.10s; }
+.animate-stagger > *:nth-child(3)  { animation-delay: 0.15s; }
+.animate-stagger > *:nth-child(4)  { animation-delay: 0.20s; }
+.animate-stagger > *:nth-child(5)  { animation-delay: 0.25s; }
+.animate-stagger > *:nth-child(6)  { animation-delay: 0.30s; }
