@@ -6,9 +6,6 @@ const PAGE_TITLES: Record<string, string> = {
   "/professor/dashboard":    "Professor Dashboard",
   "/professor/analytics":    "Analytics & Monitoring",
   "/professor/milestones":   "Milestones & Custom Tasks",
-  "/professor/rubric":       "Rubrics & Evaluation Criteria",
-  "/professor/plagiarism":   "Plagiarism Detection Center",
-  "/professor/panelists":    "Panelist Assignment",
 };
 
 export function ProfessorTopbar() {
