@@ -29,6 +29,10 @@ function SetupFormContent() {
     // Redirect to the correct role dashboard based on selected role!
     if (role === "adviser") {
       router.push("/adviser/dashboard");
+    } else if (role === "professor") {
+      router.push("/professor/dashboard");
+    } else if (role === "panelist") {
+      router.push("/panelist/dashboard");
     } else {
       router.push("/student/dashboard");
     }

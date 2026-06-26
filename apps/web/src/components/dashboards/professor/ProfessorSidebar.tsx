@@ -13,14 +13,6 @@ const NAV_SECTIONS = [
     label: "Academics",
     items: [
       { href: "/professor/milestones",   icon: "ti-list-check",       label: "Milestones & Tasks" },
-      { href: "/professor/rubric",       icon: "ti-category",         label: "Rubric & Grading" },
-    ],
-  },
-  {
-    label: "Integrity & Defense",
-    items: [
-      { href: "/professor/plagiarism",   icon: "ti-shield-alert",     label: "Plagiarism Check" },
-      { href: "/professor/panelists",    icon: "ti-users-group",      label: "Panelists" },
     ],
   },
 ];

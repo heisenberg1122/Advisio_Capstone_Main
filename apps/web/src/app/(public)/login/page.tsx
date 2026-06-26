@@ -8,13 +8,16 @@ export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [roleSelect, setRoleSelect] = useState<"student" | "adviser">("student");
+  const [roleSelect, setRoleSelect] = useState<"student" | "adviser" | "professor" | "panelist">("student");
 
   const handleSignIn = (e: React.FormEvent) => {
     e.preventDefault();
-    // In this prototype, we simulate redirection to the first-time profile setup
-    // but pass the role as a query param or state so they can experience the flow
-    router.push(`/first-login-setup?role=${roleSelect}&email=${encodeURIComponent(email || "juan.reyes@university.edu.ph")}`);
+    let defaultEmail = "juan.reyes@university.edu.ph";
+    if (roleSelect === "adviser") defaultEmail = "rachel.lim@university.edu.ph";
+    else if (roleSelect === "professor") defaultEmail = "arthur.pendelton@university.edu.ph";
+    else if (roleSelect === "panelist") defaultEmail = "lisa.wong@university.edu.ph";
+
+    router.push(`/first-login-setup?role=${roleSelect}&email=${encodeURIComponent(email || defaultEmail)}`);
   };
 
   return (
@@ -130,18 +133,18 @@ export default function LoginPage() {
           <form onSubmit={handleSignIn} className="flex flex-col gap-4">
             
             {/* Demo Role Selector Toggle */}
-            <div className="p-1.5 bg-slate-100 rounded-xl flex gap-1 border border-slate-200">
+            <div className="p-1.5 bg-slate-100 rounded-xl grid grid-cols-2 gap-1.5 border border-slate-200">
               <button 
                 type="button"
                 onClick={() => {
                   setRoleSelect("student");
                   setEmail("juan.reyes@university.edu.ph");
                 }}
-                className={`flex-1 py-1.5 text-center text-[12px] font-bold rounded-lg transition-all ${
-                  roleSelect === "student" ? "bg-white text-blue-600 shadow-sm" : "text-slate-500 hover:text-slate-800"
+                className={`py-2 text-center text-[11px] font-bold rounded-lg transition-all cursor-pointer ${
+                  roleSelect === "student" ? "bg-white text-blue-600 shadow-sm" : "text-slate-500 hover:text-slate-850"
                 }`}
               >
-                Sign in as Student
+                Student
               </button>
               <button 
                 type="button"
@@ -149,11 +152,35 @@ export default function LoginPage() {
                   setRoleSelect("adviser");
                   setEmail("rachel.lim@university.edu.ph");
                 }}
-                className={`flex-1 py-1.5 text-center text-[12px] font-bold rounded-lg transition-all ${
-                  roleSelect === "adviser" ? "bg-white text-blue-600 shadow-sm" : "text-slate-500 hover:text-slate-800"
+                className={`py-2 text-center text-[11px] font-bold rounded-lg transition-all cursor-pointer ${
+                  roleSelect === "adviser" ? "bg-white text-blue-600 shadow-sm" : "text-slate-500 hover:text-slate-850"
                 }`}
               >
-                Sign in as Faculty/Adviser
+                Adviser
+              </button>
+              <button 
+                type="button"
+                onClick={() => {
+                  setRoleSelect("professor");
+                  setEmail("arthur.pendelton@university.edu.ph");
+                }}
+                className={`py-2 text-center text-[11px] font-bold rounded-lg transition-all cursor-pointer ${
+                  roleSelect === "professor" ? "bg-white text-blue-600 shadow-sm" : "text-slate-500 hover:text-slate-855"
+                }`}
+              >
+                Professor
+              </button>
+              <button 
+                type="button"
+                onClick={() => {
+                  setRoleSelect("panelist");
+                  setEmail("lisa.wong@university.edu.ph");
+                }}
+                className={`py-2 text-center text-[11px] font-bold rounded-lg transition-all cursor-pointer ${
+                  roleSelect === "panelist" ? "bg-white text-blue-600 shadow-sm" : "text-slate-500 hover:text-slate-855"
+                }`}
+              >
+                Panelist
               </button>
             </div>
 
