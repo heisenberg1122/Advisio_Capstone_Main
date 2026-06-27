@@ -3,34 +3,34 @@
 /* ─── Design Tokens ─────────────────────────────────────────── */
 :root {
   /* Backgrounds */
-  --color-background-primary:   #0f1117;
-  --color-background-secondary: #161b27;
-  --color-background-tertiary:  #0b0e16;
+  --color-background-primary:   #ffffff;
+  --color-background-secondary: #f8fafc;
+  --color-background-tertiary:  #f1f5f9;
 
-  --color-background-info:    rgba(59, 130, 246, 0.12);
-  --color-background-success: rgba(34, 197, 94,  0.12);
-  --color-background-warning: rgba(251, 191, 36, 0.12);
-  --color-background-danger:  rgba(239, 68,  68, 0.12);
+  --color-background-info:    rgba(27, 66, 100, 0.06);
+  --color-background-success: rgba(34, 197, 94,  0.1);
+  --color-background-warning: rgba(251, 191, 36, 0.1);
+  --color-background-danger:  rgba(239, 68,  68, 0.1);
 
   /* Borders */
-  --color-border-tertiary:  rgba(255, 255, 255, 0.07);
-  --color-border-secondary: rgba(255, 255, 255, 0.12);
-  --color-border-primary:   rgba(255, 255, 255, 0.18);
+  --color-border-tertiary:  rgba(27, 66, 100, 0.08);
+  --color-border-secondary: rgba(27, 66, 100, 0.15);
+  --color-border-primary:   rgba(27, 66, 100, 0.25);
 
-  --color-border-info:    rgba(59, 130, 246, 0.4);
+  --color-border-info:    rgba(27, 66, 100, 0.4);
   --color-border-success: rgba(34, 197, 94,  0.4);
   --color-border-warning: rgba(251, 191, 36, 0.4);
   --color-border-danger:  rgba(239, 68,  68, 0.4);
 
   /* Text */
-  --color-text-primary:   #f1f5f9;
-  --color-text-secondary: #94a3b8;
-  --color-text-tertiary:  #475569;
+  --color-text-primary:   #1b4264;
+  --color-text-secondary: #475569;
+  --color-text-tertiary:  #64748b;
 
-  --color-text-info:    #60a5fa;
-  --color-text-success: #4ade80;
-  --color-text-warning: #fbbf24;
-  --color-text-danger:  #f87171;
+  --color-text-info:    #1b4264;
+  --color-text-success: #15803d;
+  --color-text-warning: #b45309;
+  --color-text-danger:  #b91c1c;
 
   /* Radius */
   --border-radius-sm: 4px;
@@ -137,7 +137,7 @@ body {
   height: 100%;
   background: var(--color-background-success);
   border-radius: 99px;
-  background: linear-gradient(90deg, #22c55e, #4ade80);
+  background: linear-gradient(90deg, #1b4264, #ffa400);
   transition: width 0.6s ease;
 }
 
