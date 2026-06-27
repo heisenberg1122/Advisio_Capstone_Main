@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import path from "path";
 
 const nextConfig: NextConfig = {
   // Enable React strict mode for better dev warnings
@@ -14,6 +15,10 @@ const nextConfig: NextConfig = {
 
   // Typed routes (Next.js 16+)
   typedRoutes: false,
+
+  turbopack: {
+    root: path.resolve(__dirname, "../.."),
+  },
 };
 
 export default nextConfig;

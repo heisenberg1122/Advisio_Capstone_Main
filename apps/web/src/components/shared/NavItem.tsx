@@ -18,10 +18,10 @@ export function NavItem({ href, icon, label }: NavItemProps) {
     <Link
       href={href}
       className={cn(
-        "flex items-center gap-[10px] px-4 py-[7px] text-[13.5px] transition-all duration-[120ms] border-l-2 border-transparent",
-        "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-background-secondary)]",
+        "flex items-center gap-[10px] px-4 py-[7px] text-[13.5px] transition-all duration-[120ms] rounded-lg mx-2 my-0.5",
+        "text-slate-300 hover:text-white hover:bg-white/5",
         isActive &&
-          "text-[var(--color-text-info)] bg-[var(--color-background-info)] border-l-[var(--color-border-info)]"
+          "bg-[#ffa400] text-[#1b4264] font-bold shadow-md shadow-[#ffa400]/10 hover:bg-[#ffa400] hover:text-[#1b4264]"
       )}
     >
       <i className={`ti ${icon} text-base w-4 flex-shrink-0`} aria-hidden="true" />
