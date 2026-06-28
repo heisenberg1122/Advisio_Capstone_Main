@@ -58,182 +58,233 @@ function PanelistDashboardContent() {
         </div>
       )}
 
-      {/* TOPBAR */}
-      <header className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between select-none">
-        <div>
-          <h1 className="text-[16px] font-extrabold text-[#1b4264]">Panelist Portal</h1>
-          <p className="text-[11px] text-slate-400 font-bold">Research Evaluation Panel</p>
-        </div>
-        <div className="flex items-center gap-4">
-          <div className="relative cursor-pointer w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-[#1b4264] border border-slate-200 hover:bg-slate-100 transition">
-            <i className="ti ti-bell text-base" />
-            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-[#ffa400] rounded-full border border-white" />
-          </div>
-          <div className="h-8 w-px bg-slate-200" />
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-[#1b4264] flex items-center justify-center text-[12px] font-extrabold text-white">
-              LW
-            </div>
-            <div>
-              <div className="text-[12px] font-extrabold text-[#1b4264]">Dr. Lisa Wong</div>
-              <div className="text-[9px] text-slate-400 font-bold">Research Panelist</div>
-            </div>
-          </div>
-        </div>
-      </header>
 
       {/* MAIN CONTAINER */}
       <main className="flex-1 p-6 flex flex-col gap-6 overflow-y-auto">
         
-        {activeTab === "overview" && (
-          <>
-            {/* EXACT PANELIST CARDS */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-                <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#1b4264] flex items-center justify-center text-lg">
-                  <i className="ti ti-calendar" />
-                </div>
-                <div>
-                  <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Assigned Defense Schedules</span>
-                  <span className="text-[18px] font-extrabold text-[#1b4264]">{schedules.length} Panels</span>
-                </div>
-              </div>
+        {(() => {
+          const tabTitles: Record<string, string> = {
+            overview: "Panelist Dashboard",
+            schedule: "Defense Schedule Management",
+            documents: "Submitted Research Documents",
+            evaluation: "Digital Evaluation & Scoring Sheets",
+            grades: "Grades & Recommendations",
+            history: "Historical Grading Records",
+            settings: "Settings",
+          };
 
-              <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-                <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#ffa400] flex items-center justify-center text-lg">
-                  <i className="ti ti-file-text" />
-                </div>
-                <div>
-                  <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Submitted Research Docs</span>
-                  <span className="text-[18px] font-extrabold text-[#1b4264]">{documents.length} Files</span>
-                </div>
-              </div>
+          const tabContent: Record<string, React.ReactNode> = {
+            overview: (
+              <>
+                {/* EXACT PANELIST CARDS */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#1b4264] flex items-center justify-center text-lg">
+                      <i className="ti ti-calendar" />
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Assigned Defense Schedules</span>
+                      <span className="text-[18px] font-extrabold text-[#1b4264]">{schedules.length} Panels</span>
+                    </div>
+                  </div>
 
-              <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-                <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#ffa400] flex items-center justify-center text-lg">
-                  <i className="ti ti-stars" />
-                </div>
-                <div>
-                  <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Pending Evaluation Sheets</span>
-                  <span className="text-[18px] font-extrabold text-[#1b4264]">{evaluations.length} Pending</span>
-                </div>
-              </div>
+                  <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#ffa400] flex items-center justify-center text-lg">
+                      <i className="ti ti-file-text" />
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Submitted Research Docs</span>
+                      <span className="text-[18px] font-extrabold text-[#1b4264]">{documents.length} Files</span>
+                    </div>
+                  </div>
 
-              <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-                <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#1b4264] flex items-center justify-center text-lg">
-                  <i className="ti ti-circle-check" />
-                </div>
-                <div>
-                  <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Grades Submitted</span>
-                  <span className="text-[18px] font-extrabold text-[#1b4264]">{gradesSubmitted.length} Grades</span>
-                </div>
-              </div>
+                  <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#ffa400] flex items-center justify-center text-lg">
+                      <i className="ti ti-stars" />
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Pending Evaluation Sheets</span>
+                      <span className="text-[18px] font-extrabold text-[#1b4264]">{evaluations.length} Pending</span>
+                    </div>
+                  </div>
 
-              <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-                <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#ffa400] flex items-center justify-center text-lg">
-                  <i className="ti ti-thumb-up" />
+                  <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#1b4264] flex items-center justify-center text-lg">
+                      <i className="ti ti-circle-check" />
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Grades Submitted</span>
+                      <span className="text-[18px] font-extrabold text-[#1b4264]">{gradesSubmitted.length} Grades</span>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Recommendations Submitted</span>
-                  <span className="text-[18px] font-extrabold text-[#1b4264]">{gradesSubmitted.length} Recs</span>
-                </div>
-              </div>
 
-              <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-                <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#ffa400] flex items-center justify-center text-lg">
-                  <i className="ti ti-history" />
-                </div>
-                <div>
-                  <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Historical Records</span>
-                  <span className="text-[18px] font-extrabold text-[#ffa400]">12 Past</span>
-                </div>
-              </div>
+                {/* Quick summaries */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col gap-3">
+                    <h3 className="font-extrabold text-[#1b4264] text-[14px]">Assigned Defense Schedules</h3>
+                    <div className="flex flex-col gap-2.5">
+                      {schedules.map(s => (
+                        <div key={s.id} className="p-2.5 bg-slate-50 border border-slate-200 rounded text-[12px] flex justify-between items-center shadow-sm">
+                          <div>
+                            <span className="font-bold text-[#1b4264] block">{s.title}</span>
+                            <span className="text-[10px] text-slate-450">{s.date} · {s.time} ({s.venue})</span>
+                          </div>
+                          <Tag variant="warn">{s.type}</Tag>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
 
-              <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-                <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#1b4264] flex items-center justify-center text-lg">
-                  <i className="ti ti-bell" />
+                  <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col gap-3">
+                    <h3 className="font-extrabold text-[#1b4264] text-[14px]">Pending Digital Evaluations</h3>
+                    <div className="flex flex-col gap-2.5">
+                      {evaluations.map(e => (
+                        <div key={e.id} className="p-2.5 bg-slate-50 border border-slate-200 rounded text-[12px] flex justify-between items-center shadow-sm">
+                          <span>{e.title}</span>
+                          <button onClick={()=>triggerToast("Opening evaluation rubric sheet.")} className="px-2.5 py-1 bg-[#ffa400] text-[#1b4264] font-extrabold text-[10px] rounded border border-[#ffa400] cursor-pointer">
+                            Evaluate
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Notifications</span>
-                  <span className="text-[18px] font-extrabold text-[#1b4264]">{notifications.length} Alerts</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Quick summaries */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col gap-3">
-                <h3 className="font-extrabold text-[#1b4264] text-[14px]">Assigned Defense Schedules</h3>
-                <div className="flex flex-col gap-2.5">
+              </>
+            ),
+            schedule: (
+              <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
+                <h3 className="font-extrabold text-[#1b4264] text-[16px]">Defense Schedule Management</h3>
+                <p className="text-[11px] text-slate-400 font-bold">Review defense panel timings, assignees, and digital venues.</p>
+                <div className="flex flex-col gap-3 mt-2">
                   {schedules.map(s => (
-                    <div key={s.id} className="p-2.5 bg-slate-50 border border-slate-200 rounded text-[12px] flex justify-between items-center shadow-sm">
+                    <div key={s.id} className="p-4 bg-slate-50 border border-slate-200 rounded-xl flex justify-between items-center text-[12.5px] shadow-sm">
                       <div>
                         <span className="font-bold text-[#1b4264] block">{s.title}</span>
-                        <span className="text-[10px] text-slate-450">{s.date} · {s.time} ({s.venue})</span>
+                        <span className="text-[11px] text-slate-500">{s.date} at {s.time} · Venue: {s.venue}</span>
                       </div>
                       <Tag variant="warn">{s.type}</Tag>
                     </div>
                   ))}
                 </div>
               </div>
-
-              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col gap-3">
-                <h3 className="font-extrabold text-[#1b4264] text-[14px]">Pending Digital Evaluations</h3>
-                <div className="flex flex-col gap-2.5">
-                  {evaluations.map(e => (
-                    <div key={e.id} className="p-2.5 bg-slate-50 border border-slate-200 rounded text-[12px] flex justify-between items-center shadow-sm">
-                      <span>{e.title}</span>
-                      <button onClick={()=>triggerToast("Opening evaluation rubric sheet.")} className="px-2.5 py-1 bg-[#ffa400] text-[#1b4264] font-extrabold text-[10px] rounded border border-[#ffa400] cursor-pointer">
-                        Evaluate
-                      </button>
+            ),
+            documents: (
+              <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
+                <h3 className="font-extrabold text-[#1b4264] text-[16px]">Submitted Research Documents</h3>
+                <p className="text-[11px] text-slate-400 font-bold">Review draft submissions, download version histories, and checklist files.</p>
+                <div className="flex flex-col gap-3 mt-2">
+                  {documents.map(d => (
+                    <div key={d.id} className="p-4 bg-slate-50 border border-slate-200 rounded-xl flex justify-between items-center text-[12.5px] shadow-sm">
+                      <div>
+                        <span className="font-bold text-[#1b4264] block">{d.title}</span>
+                        <span className="text-[11px] text-slate-500">{d.group}</span>
+                      </div>
+                      <span className="text-[11px] font-bold text-[#ffa400]">{d.status}</span>
                     </div>
                   ))}
                 </div>
               </div>
-            </div>
-          </>
-        )}
-
-        {/* TAB 4: DIGITAL EVALUATIONS */}
-        {activeTab === "evaluation" && (
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
-            <h3 className="font-extrabold text-[#1b4264] text-[16px]">Digital Evaluation & Scoring Sheets</h3>
-            <p className="text-[11px] text-slate-400 font-bold">Input institutional rubric scores, grade points, and panel recommendations.</p>
-            {evaluations.map(e => (
-              <div key={e.id} className="p-4 bg-slate-50 border border-slate-200 rounded-xl flex flex-col gap-3 text-[12.5px] shadow-sm">
-                <div className="font-bold text-[#1b4264] text-[13.5px] border-b border-slate-150 pb-2">{e.title}</div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="flex flex-col gap-1">
-                    <label className="font-bold text-slate-600">Overall Grade / Score (1-100)</label>
-                    <input 
-                      type="number" 
-                      value={activeScore}
-                      onChange={(e)=>setActiveScore(Number(e.target.value))}
-                      placeholder="e.g. 90" 
-                      className="bg-white border border-slate-350 rounded-lg p-2 focus:outline-none" 
-                    />
+            ),
+            evaluation: (
+              <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
+                <h3 className="font-extrabold text-[#1b4264] text-[16px]">Digital Evaluation & Scoring Sheets</h3>
+                <p className="text-[11px] text-slate-400 font-bold">Input institutional rubric scores, grade points, and panel recommendations.</p>
+                {evaluations.map(e => (
+                  <div key={e.id} className="p-4 bg-slate-50 border border-slate-200 rounded-xl flex flex-col gap-3 text-[12.5px] shadow-sm">
+                    <div className="font-bold text-[#1b4264] text-[13.5px] border-b border-slate-150 pb-2">{e.title}</div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="flex flex-col gap-1">
+                        <label className="font-bold text-slate-600">Overall Grade / Score (1-100)</label>
+                        <input 
+                          type="number" 
+                          value={activeScore}
+                          onChange={(e)=>setActiveScore(Number(e.target.value))}
+                          placeholder="e.g. 90" 
+                          className="bg-white border border-slate-350 rounded-lg p-2 focus:outline-none" 
+                        />
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <label className="font-bold text-slate-600">Recommendations</label>
+                        <input 
+                          type="text" 
+                          value={activeRecs}
+                          onChange={(e)=>setActiveRecs(e.target.value)}
+                          placeholder="e.g. Recommended for final clearance with revisions" 
+                          className="bg-white border border-slate-350 rounded-lg p-2 focus:outline-none" 
+                        />
+                      </div>
+                    </div>
+                    <button 
+                      onClick={() => handleSubmitEvaluation(e.id, e.title)}
+                      className="px-4 py-2 bg-[#ffa400] text-[#1b4264] font-extrabold rounded-lg border border-[#ffa400] self-start mt-2"
+                    >
+                      Submit Scores & Grades
+                    </button>
                   </div>
-                  <div className="flex flex-col gap-1">
-                    <label className="font-bold text-slate-600">Recommendations</label>
-                    <input 
-                      type="text" 
-                      value={activeRecs}
-                      onChange={(e)=>setActiveRecs(e.target.value)}
-                      placeholder="e.g. Recommended for final clearance with revisions" 
-                      className="bg-white border border-slate-350 rounded-lg p-2 focus:outline-none" 
-                    />
+                ))}
+                {evaluations.length === 0 && (
+                  <div className="text-[12px] text-slate-400 font-medium text-center py-4">No pending evaluation sheets.</div>
+                )}
+              </div>
+            ),
+            grades: (
+              <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
+                <h3 className="font-extrabold text-[#1b4264] text-[16px]">Grades & Recommendations</h3>
+                <p className="text-[11px] text-slate-400 font-bold">Monitor submitted grades, final marks, and panel consensus records.</p>
+                <div className="flex flex-col gap-3 mt-2">
+                  {gradesSubmitted.map(g => (
+                    <div key={g.id} className="p-4 bg-slate-50 border border-slate-200 rounded-xl flex justify-between items-center text-[12.5px] shadow-sm">
+                      <div>
+                        <span className="font-bold text-[#1b4264] block">{g.title}</span>
+                        <span className="text-[10px] text-slate-400 font-mono">Score: {g.score}</span>
+                      </div>
+                      <Tag variant="success">{g.status}</Tag>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ),
+            history: (
+              <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
+                <h3 className="font-extrabold text-[#1b4264] text-[16px]">Historical Grading Records</h3>
+                <p className="text-[11px] text-slate-400 font-bold">Access historical transcripts, previous semester grading sheets, and archives.</p>
+                <div className="bg-slate-50 p-4 border border-slate-200 rounded-xl text-[12.5px] mt-2 shadow-sm text-slate-650 flex flex-col gap-2">
+                  <div><strong>Total Historical Panels:</strong> 12 Panels</div>
+                  <div className="h-px bg-slate-200 my-1" />
+                  <div className="text-[11.5px] font-medium flex flex-col gap-2">
+                    <div>1. SECURE DECENTRALIZED GRADING SYSTEM (A.Y. 2025 CS) — Passed (94)</div>
+                    <div>2. IOT SMART HOME HUB SECURITY (A.Y. 2025 IT) — Passed (91)</div>
                   </div>
                 </div>
-                <button 
-                  onClick={() => handleSubmitEvaluation(e.id, e.title)}
-                  className="px-4 py-2 bg-[#ffa400] text-[#1b4264] font-extrabold rounded-lg border border-[#ffa400] self-start mt-2"
-                >
-                  Submit Scores & Grades
-                </button>
               </div>
-            ))}
-          </div>
-        )}
+            ),
+            settings: (
+              <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
+                <h3 className="font-extrabold text-[#1b4264] text-[16px]">Portal Settings</h3>
+                <p className="text-[11px] text-slate-400 font-bold">Manage your notification channels, credentials, and theme settings.</p>
+                <div className="bg-slate-50 p-4 border border-slate-200 rounded-xl text-[12.5px] mt-2 flex flex-col gap-4 shadow-sm">
+                  <div className="flex justify-between items-center pb-3 border-b border-slate-200">
+                    <div>
+                      <span className="font-bold text-[#1b4264] block">Email Notifications</span>
+                      <span className="text-[10px] text-slate-400">Receive system notifications via email address.</span>
+                    </div>
+                    <input type="checkbox" defaultChecked className="accent-[#ffa400] w-4 h-4 cursor-pointer" />
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <span className="font-bold text-[#1b4264] block">Dark Mode</span>
+                      <span className="text-[10px] text-slate-400">Switch platform styling theme to night vision.</span>
+                    </div>
+                    <input type="checkbox" className="accent-[#ffa400] w-4 h-4 cursor-pointer" />
+                  </div>
+                </div>
+              </div>
+            ),
+          };
+
+          return tabContent[activeTab] || tabContent.overview;
+        })()}
 
       </main>
 

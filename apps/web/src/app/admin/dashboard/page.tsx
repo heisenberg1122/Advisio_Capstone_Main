@@ -2,7 +2,6 @@
 
 import React, { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { Card } from "@/components/ui/Card";
 import { Tag } from "@/components/ui/Tag";
 
 // ─── MOCK DATABASE / STATE FOR ADMINISTRATIVE PANEL ───
@@ -51,7 +50,6 @@ function AdminDashboardContent() {
   // Search & Filters
   const [userSearch, setUserSearch] = useState("");
   const [userRoleFilter, setUserRoleFilter] = useState("all");
-  const [projectFilter, setProjectFilter] = useState("all");
 
   // Modal Control States
   const [selectedUser, setSelectedUser] = useState<any>(null);
@@ -65,7 +63,7 @@ function AdminDashboardContent() {
   const [defDate, setDefDate] = useState("");
   const [defTime, setDefTime] = useState("");
   const [defVenue, setDefVenue] = useState("");
-  const [defPanelists, setDefPanelists] = useState<string[]>([]);
+  const [defPanelists, setDefPanelists] = useState<string[]>(["Dr. Lisa Wong", "Prof. Arthur Pendleton"]);
   
   const [modalCert, setModalCert] = useState(false);
   const [certProject, setCertProject] = useState<any>(null);
@@ -123,7 +121,7 @@ function AdminDashboardContent() {
     const certNum = `CERT-2026-${Math.floor(100 + Math.random() * 900)}`;
     setCertificates(prev => [
       ...prev.filter(c => c.student !== certProject.student),
-      { id: Math.random().toString(), project: certProject.title, student: certProject.student, date: "2026-06-28", number: certNum, status: "generated" }
+      { id: Math.random().toString(), project: certProject.title, student: certProject.student, date: "2026-06-28", number: certNum, status: "released" }
     ]);
     setModalCert(false);
     triggerToast(`Certificate of Completion generated: ${certNum}`);
@@ -146,7 +144,6 @@ function AdminDashboardContent() {
   return (
     <div className="flex-1 flex flex-col min-h-screen text-slate-800 bg-white font-sans">
       
-      {/* SUCCESS TOAST */}
       {successMsg && (
         <div className="fixed top-5 right-5 z-55 bg-[#1b4264] border-l-4 border-[#ffa400] text-white px-4 py-3 rounded-lg shadow-xl flex items-center gap-3 animate-fade-in-up">
           <i className="ti ti-circle-check text-[#ffa400] text-lg" />
@@ -154,423 +151,374 @@ function AdminDashboardContent() {
         </div>
       )}
 
-      {/* TOP NAVBAR */}
-      <header className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between select-none">
-        <div>
-          <h1 className="text-[16px] font-extrabold text-[#1b4264]">College Admin Operations</h1>
-          <p className="text-[11px] text-slate-400 font-bold">College of Computer Studies · AY 2025-2026 · First Semester</p>
-        </div>
-        <div className="flex items-center gap-4">
-          <div className="relative cursor-pointer w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-[#1b4264] border border-slate-200 hover:bg-slate-100 transition">
-            <i className="ti ti-bell text-base" />
-            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-[#ffa400] rounded-full border border-white" />
-          </div>
-          
-          <div className="h-8 w-px bg-slate-200" />
-
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-[#1b4264] flex items-center justify-center text-[12px] font-extrabold text-white border border-white shadow">
-              AD
-            </div>
-            <div>
-              <div className="text-[12px] font-extrabold text-[#1b4264]">Admin Officer</div>
-              <div className="text-[9px] text-slate-400 font-bold">College Admin</div>
-            </div>
-          </div>
-        </div>
-      </header>
-
       {/* BODY PANEL */}
       <main className="flex-1 p-6 flex flex-col gap-6 overflow-y-auto bg-slate-50">
         
-        {/* TAB 1: OVERVIEW */}
-        {activeTab === "overview" && (
-          <>
-            {/* 8 OVERVIEW CARDS (Strict White Background, Navy Icons & Highlights) */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-                <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#1b4264] flex items-center justify-center text-lg">
-                  <i className="ti ti-users" />
-                </div>
-                <div>
-                  <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Total Users</span>
-                  <span className="text-[18px] font-extrabold text-[#1b4264]">{users.length} Active</span>
-                </div>
-              </div>
+        {(() => {
+          const tabTitles: Record<string, string> = {
+            overview: "Admin Dashboard",
+            users: "User Account Management",
+            defense: "Defense Scheduling Management",
+            projects: "Research Project Monitoring",
+            deadlines: "Deadline and Academic Calendar Management",
+            certificates: "Certificate Generation Oversight",
+            reports: "Report Generation",
+            analytics: "Analytics Dashboard",
+            repository: "Repository Management",
+            settings: "Settings",
+          };
 
-              <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-                <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#ffa400] flex items-center justify-center text-lg">
-                  <i className="ti ti-user-plus" />
-                </div>
-                <div>
-                  <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Pending Accounts</span>
-                  <span className="text-[18px] font-extrabold text-[#1b4264]">{users.filter(u=>u.status==='pending').length} Requests</span>
-                </div>
-              </div>
-
-              <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-                <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#1b4264] flex items-center justify-center text-lg">
-                  <i className="ti ti-folders" />
-                </div>
-                <div>
-                  <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Active Projects</span>
-                  <span className="text-[18px] font-extrabold text-[#1b4264]">{projects.filter(p=>p.status!=='completed').length} Ongoing</span>
-                </div>
-              </div>
-
-              <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-                <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#1b4264] flex items-center justify-center text-lg">
-                  <i className="ti ti-calendar" />
-                </div>
-                <div>
-                  <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Defense Schedules</span>
-                  <span className="text-[18px] font-extrabold text-[#1b4264]">{defenses.filter(d=>d.status==='scheduled').length} Upcoming</span>
-                </div>
-              </div>
-
-              <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-                <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#ffa400] flex items-center justify-center text-lg">
-                  <i className="ti ti-certificate" />
-                </div>
-                <div>
-                  <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Pending Certs</span>
-                  <span className="text-[18px] font-extrabold text-[#1b4264]">{certificates.filter(c=>c.status==='pending').length} Pending</span>
-                </div>
-              </div>
-
-              <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-                <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#ffa400] flex items-center justify-center text-lg">
-                  <i className="ti ti-clock-exclamation" />
-                </div>
-                <div>
-                  <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Missed Deadlines</span>
-                  <span className="text-[18px] font-extrabold text-red-650 text-[#1b4264]">3 Alerts</span>
-                </div>
-              </div>
-
-              <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-                <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#ffa400] flex items-center justify-center text-lg">
-                  <i className="ti ti-circle-check" />
-                </div>
-                <div>
-                  <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Completed Studies</span>
-                  <span className="text-[18px] font-extrabold text-[#ffa400]">142 Closed</span>
-                </div>
-              </div>
-
-              <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-                <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#1b4264] flex items-center justify-center text-lg">
-                  <i className="ti ti-file-text" />
-                </div>
-                <div>
-                  <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Reports Generated</span>
-                  <span className="text-[18px] font-extrabold text-[#1b4264]">45 Reports</span>
-                </div>
-              </div>
-            </div>
-
-            {/* MIDDLE SECTION */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              
-              {/* Progress Chart Card (Navy and Gold Theme) */}
-              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col gap-4 col-span-2">
-                <div className="flex justify-between items-center border-b border-slate-100 pb-2">
-                  <h3 className="font-extrabold text-[#1b4264] text-[14px]">Research Projects Status Progression</h3>
-                  <span className="text-[11px] text-[#ffa400] font-bold">Active Cycle</span>
-                </div>
-                {/* SVG Bar Chart with strict color scheme */}
-                <div className="flex-1 flex flex-col justify-end min-h-[220px] pt-4">
-                  <div className="flex justify-around items-end h-[160px] border-b border-slate-200 pb-2">
-                    <div className="flex flex-col items-center gap-2">
-                      <div className="w-10 bg-[#1b4264] rounded-t-md hover:bg-[#ffa400] transition-colors" style={{ height: "40px" }} />
-                      <span className="text-[10px] font-bold text-[#1b4264]">Proposal (4)</span>
+          const tabContent: Record<string, React.ReactNode> = {
+            overview: (
+              <>
+                {/* 8 OVERVIEW CARDS */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#1b4264] flex items-center justify-center text-lg">
+                      <i className="ti ti-users" />
                     </div>
-                    <div className="flex flex-col items-center gap-2">
-                      <div className="w-10 bg-[#ffa400] rounded-t-md hover:bg-[#1b4264] transition-colors" style={{ height: "100px" }} />
-                      <span className="text-[10px] font-bold text-[#1b4264]">Ongoing (10)</span>
-                    </div>
-                    <div className="flex flex-col items-center gap-2">
-                      <div className="w-10 bg-[#1b4264]/80 rounded-t-md hover:bg-[#ffa400] transition-colors" style={{ height: "60px" }} />
-                      <span className="text-[10px] font-bold text-[#1b4264]">Defense (6)</span>
-                    </div>
-                    <div className="flex flex-col items-center gap-2">
-                      <div className="w-10 bg-[#ffa400]/80 rounded-t-md hover:bg-[#1b4264] transition-colors" style={{ height: "30px" }} />
-                      <span className="text-[10px] font-bold text-[#1b4264]">Revision (3)</span>
-                    </div>
-                    <div className="flex flex-col items-center gap-2">
-                      <div className="w-10 bg-[#1b4264]/60 rounded-t-md hover:bg-[#ffa400] transition-colors" style={{ height: "140px" }} />
-                      <span className="text-[10px] font-bold text-[#1b4264]">Completed (14)</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Defense Calendar Card */}
-              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col gap-4">
-                <div className="flex justify-between items-center border-b border-slate-100 pb-2.5">
-                  <h3 className="font-extrabold text-[#1b4264] text-[14px]">Defense Schedules</h3>
-                  <button 
-                    onClick={() => setModalDefense(true)}
-                    className="text-[11px] font-bold text-[#ffa400] hover:text-[#1b4264] flex items-center gap-1 cursor-pointer transition-colors"
-                  >
-                    <i className="ti ti-plus font-extrabold" /> Schedule
-                  </button>
-                </div>
-                <div className="flex flex-col gap-3">
-                  {defenses.map(d => (
-                    <div key={d.id} className="p-3 bg-white border border-slate-200 rounded-lg flex flex-col gap-1 text-[11.5px] shadow-sm hover:border-[#ffa400] transition-colors">
-                      <div className="flex justify-between items-center">
-                        <span className="font-extrabold text-[#1b4264] truncate max-w-[170px]">{d.title}</span>
-                        <span className="px-2.5 py-0.5 rounded-full text-[8.5px] font-bold uppercase bg-[#ffa400]/10 text-[#ffa400] border border-[#ffa400]/20">
-                          {d.status}
-                        </span>
-                      </div>
-                      <div className="text-slate-500 flex justify-between">
-                        <span>{d.type} · {d.venue}</span>
-                        <span className="font-bold text-[#1b4264]">{d.date} · {d.time}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* BOTTOM SECTION */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              
-              {/* Account Approvals Section */}
-              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col gap-4">
-                <h3 className="font-extrabold text-[#1b4264] text-[14px]">Pending Account Approvals</h3>
-                <div className="flex flex-col gap-3">
-                  {users.filter(u=>u.status==='pending').map(user => (
-                    <div key={user.id} className="flex items-center justify-between p-3 bg-white border border-slate-200 rounded-lg text-[12px] shadow-sm">
-                      <div>
-                        <span className="font-extrabold text-[#1b4264] block">{user.name}</span>
-                        <span className="text-[10px] text-slate-400 block">{user.email} · {user.role}</span>
-                      </div>
-                      <div className="flex gap-2">
-                        <button 
-                          onClick={() => { setSelectedUser(user); setModalApprove(true); }}
-                          className="px-2.5 py-1 bg-[#ffa400] hover:bg-[#e09000] text-[#1b4264] text-[10px] font-extrabold rounded cursor-pointer border border-[#ffa400] shadow-sm active:scale-[0.98] transition-all"
-                        >
-                          Approve
-                        </button>
-                        <button 
-                          onClick={() => { setSelectedUser(user); setModalSuspend(true); }}
-                          className="px-2.5 py-1 bg-white border border-slate-300 text-[#1b4264] hover:bg-slate-50 text-[10px] font-extrabold rounded cursor-pointer transition-colors shadow-sm"
-                        >
-                          Suspend
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Deadlines Section */}
-              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col gap-4">
-                <div className="flex justify-between items-center border-b border-slate-100 pb-2">
-                  <h3 className="font-extrabold text-[#1b4264] text-[14px]">Academic Deadlines</h3>
-                  <button 
-                    onClick={() => setModalDeadline(true)}
-                    className="text-[11px] font-bold text-[#ffa400] hover:text-[#1b4264] flex items-center gap-1 cursor-pointer transition-colors"
-                  >
-                    <i className="ti ti-plus font-extrabold" /> Add
-                  </button>
-                </div>
-                <div className="flex flex-col gap-3">
-                  {deadlines.map(dl => (
-                    <div key={dl.id} className="flex justify-between items-center p-3 bg-white border border-slate-200 rounded-lg text-[12px] shadow-sm">
-                      <div>
-                        <span className="font-bold text-slate-700 block">{dl.title}</span>
-                        <span className="text-[9px] px-1.5 py-0.5 rounded bg-[#1b4264]/5 font-extrabold text-[#1b4264] uppercase border border-[#1b4264]/10 inline-block mt-0.5">
-                          {dl.type}
-                        </span>
-                      </div>
-                      <span className="font-extrabold text-[#ffa400] text-[11px]">{dl.date}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Reports Section */}
-              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col gap-4">
-                <div className="flex justify-between items-center border-b border-slate-100 pb-2">
-                  <h3 className="font-extrabold text-[#1b4264] text-[14px]">Recently Generated Reports</h3>
-                  <button 
-                    onClick={() => setModalExport(true)}
-                    className="text-[11px] font-bold text-[#ffa400] hover:text-[#1b4264] flex items-center gap-1 cursor-pointer transition-colors"
-                  >
-                    <i className="ti ti-download" /> Export
-                  </button>
-                </div>
-                <div className="flex flex-col gap-3">
-                  <div className="p-3 bg-white border border-slate-200 rounded-lg text-[12px] flex justify-between items-center shadow-sm">
                     <div>
-                      <span className="font-bold text-slate-700 block">Adviser Workload Distribution</span>
-                      <span className="text-[10px] text-slate-400">Exported: PDF · Jun 27, 2026</span>
+                      <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Total Users</span>
+                      <span className="text-[18px] font-extrabold text-[#1b4264]">{users.length} Active</span>
                     </div>
-                    <i className="ti ti-file-type-pdf text-[#1b4264] text-lg" />
                   </div>
-                  <div className="p-3 bg-white border border-slate-200 rounded-lg text-[12px] flex justify-between items-center shadow-sm">
-                    <div>
-                      <span className="font-bold text-slate-700 block">Active Proposals Summary</span>
-                      <span className="text-[10px] text-slate-400">Exported: Excel · Jun 25, 2026</span>
+
+                  <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#ffa400] flex items-center justify-center text-lg">
+                      <i className="ti ti-user-plus" />
                     </div>
-                    <i className="ti ti-file-type-xls text-[#ffa400] text-lg" />
+                    <div>
+                      <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Pending Accounts</span>
+                      <span className="text-[18px] font-extrabold text-[#1b4264]">{users.filter(u=>u.status==='pending').length} Requests</span>
+                    </div>
+                  </div>
+
+                  <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#ffa400] flex items-center justify-center text-lg">
+                      <i className="ti ti-calendar" />
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Defense Panels</span>
+                      <span className="text-[18px] font-extrabold text-[#1b4264]">{defenses.length} Scheduled</span>
+                    </div>
+                  </div>
+
+                  <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#1b4264] flex items-center justify-center text-lg">
+                      <i className="ti ti-target" />
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Active Studies</span>
+                      <span className="text-[18px] font-extrabold text-[#1b4264]">{projects.length} Ongoing</span>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-            </div>
-          </>
-        )}
-
-        {/* TAB 2: USER ACCOUNT MANAGEMENT */}
-        {activeTab === "users" && (
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
-            <div className="flex justify-between items-center border-b border-slate-100 pb-4">
-              <div>
-                <h3 className="font-extrabold text-[#1b4264] text-[16px]">User Account Management</h3>
-                <p className="text-[11px] text-slate-400 font-bold">Activate, suspend, or configure user permissions.</p>
-              </div>
-            </div>
-
-            {/* Filters Bar */}
-            <div className="flex flex-wrap gap-3 items-center justify-between">
-              <div className="flex items-center gap-3">
-                <input 
-                  type="text" 
-                  value={userSearch}
-                  onChange={(e) => setUserSearch(e.target.value)}
-                  placeholder="Search user ID, name, email..."
-                  className="bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-[12.5px] w-64 focus:outline-none focus:border-[#ffa400] focus:ring-1 focus:ring-[#ffa400]"
-                />
-                <select 
-                  value={userRoleFilter} 
-                  onChange={(e) => setUserRoleFilter(e.target.value)}
-                  className="bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-[12.5px] focus:outline-none focus:border-[#ffa400]"
-                >
-                  <option value="all">All Roles</option>
-                  <option value="student">Student</option>
-                  <option value="adviser">Adviser</option>
-                  <option value="professor">Professor</option>
-                  <option value="panelist">Panelist</option>
-                </select>
-              </div>
-            </div>
-
-            {/* Users Table */}
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse text-[12px]">
-                <thead>
-                  <tr className="border-b border-slate-200 text-[#1b4264] uppercase tracking-wider text-[10px] font-extrabold">
-                    <th className="py-2.5 px-3">Name</th>
-                    <th className="py-2.5 px-3">University Email</th>
-                    <th className="py-2.5 px-3">ID Number</th>
-                    <th className="py-2.5 px-3">Role</th>
-                    <th className="py-2.5 px-3">Status</th>
-                    <th className="py-2.5 px-3 text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {users
-                    .filter(u => {
-                      const matchesSearch = u.name.toLowerCase().includes(userSearch.toLowerCase()) || 
-                                            u.email.toLowerCase().includes(userSearch.toLowerCase()) ||
-                                            u.idNumber.includes(userSearch);
-                      const matchesRole = userRoleFilter === "all" || u.role === userRoleFilter;
-                      return matchesSearch && matchesRole;
-                    })
-                    .map((u) => (
-                      <tr key={u.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                        <td className="py-3 px-3 font-extrabold text-[#1b4264]">{u.name}</td>
-                        <td className="py-3 px-3 text-slate-500">{u.email}</td>
-                        <td className="py-3 px-3 font-mono">{u.idNumber}</td>
-                        <td className="py-3 px-3 uppercase text-[10px] font-extrabold text-[#1b4264]">{u.role}</td>
-                        <td className="py-3 px-3">
-                          <Tag variant={u.status === "active" ? "success" : u.status === "suspended" ? "danger" : "warn"}>
-                            {u.status}
-                          </Tag>
-                        </td>
-                        <td className="py-3 px-3 text-right">
-                          <div className="flex justify-end gap-2">
-                            {u.status !== "active" && (
-                              <button 
-                                onClick={() => { setSelectedUser(u); setModalApprove(true); }}
-                                className="px-2.5 py-1 bg-[#ffa400] hover:bg-[#e09000] text-[#1b4264] rounded border border-[#ffa400] cursor-pointer font-bold text-[10.5px] transition-colors shadow-sm"
-                              >
-                                Activate
-                              </button>
-                            )}
-                            {u.status !== "suspended" && (
-                              <button 
-                                onClick={() => { setSelectedUser(u); setModalSuspend(true); }}
-                                className="px-2.5 py-1 bg-white text-[#1b4264] hover:bg-slate-50 rounded border border-slate-300 cursor-pointer font-bold text-[10.5px] transition-colors shadow-sm"
-                              >
-                                Suspend
-                              </button>
-                            )}
+                {/* Quick summaries */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col gap-3">
+                    <h3 className="font-extrabold text-[#1b4264] text-[14px]">Pending User Account Actions</h3>
+                    <div className="flex flex-col gap-2.5">
+                      {users.filter(u => u.status === "pending").slice(0, 3).map(u => (
+                        <div key={u.id} className="flex justify-between items-center p-2.5 bg-slate-50 border border-slate-200 rounded text-[12px]">
+                          <div>
+                            <span className="font-bold text-[#1b4264] block">{u.name}</span>
+                            <span className="text-[10px] text-slate-400">{u.role} · {u.email}</span>
                           </div>
-                        </td>
+                          <button onClick={() => { setSelectedUser(u); setModalApprove(true); }} className="px-2.5 py-1 bg-[#ffa400] text-[#1b4264] font-extrabold text-[10px] rounded border border-[#ffa400] cursor-pointer">
+                            Activate
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col gap-3">
+                    <h3 className="font-extrabold text-[#1b4264] text-[14px]">Upcoming Academic Deadlines</h3>
+                    <div className="flex flex-col gap-2.5">
+                      {deadlines.slice(0, 3).map(dl => (
+                        <div key={dl.id} className="p-2.5 bg-slate-50 border border-slate-200 rounded text-[12px] flex justify-between items-center">
+                          <div>
+                            <span className="font-bold text-[#1b4264] block">{dl.title}</span>
+                            <span className="text-[10px] text-slate-400">{dl.date}</span>
+                          </div>
+                          <Tag variant={dl.status==='completed'?'success':'warn'}>{dl.status}</Tag>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </>
+            ),
+            users: (
+              <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
+                <div className="flex justify-between items-center border-b border-slate-100 pb-4">
+                  <div>
+                    <h3 className="font-extrabold text-[#1b4264] text-[16px]">User Account Management</h3>
+                    <p className="text-[11px] text-slate-400 font-bold">Activate, suspend, or configure user permissions.</p>
+                  </div>
+                </div>
+
+                {/* Filters Bar */}
+                <div className="flex flex-wrap gap-3 items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <input 
+                      type="text" 
+                      value={userSearch}
+                      onChange={(e) => setUserSearch(e.target.value)}
+                      placeholder="Search user ID, name, email..."
+                      className="bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-[12.5px] w-64 focus:outline-none focus:border-[#ffa400]" 
+                    />
+                  </div>
+                </div>
+
+                <div className="overflow-x-auto mt-2">
+                  <table className="w-full text-left border-collapse text-[12px]">
+                    <thead>
+                      <tr className="border-b border-slate-200 text-[#1b4264] font-extrabold uppercase text-[10px]">
+                        <th className="py-2.5">Name</th>
+                        <th className="py-2.5">Role</th>
+                        <th className="py-2.5">Email</th>
+                        <th className="py-2.5">Status</th>
+                        <th className="py-2.5">Actions</th>
                       </tr>
+                    </thead>
+                    <tbody>
+                      {users.filter(u => u.name.toLowerCase().includes(userSearch.toLowerCase())).map(u => (
+                        <tr key={u.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                          <td className="py-3 font-bold text-[#1b4264]">{u.name}</td>
+                          <td className="py-3 text-slate-500 font-medium">{u.role}</td>
+                          <td className="py-3 text-slate-500">{u.email}</td>
+                          <td className="py-3">
+                            <Tag variant={u.status === "active" ? "success" : u.status === "pending" ? "warn" : "info"}>{u.status}</Tag>
+                          </td>
+                          <td className="py-3">
+                            <div className="flex gap-2">
+                              {u.status === "pending" && (
+                                <button 
+                                  onClick={() => { setSelectedUser(u); setModalApprove(true); }}
+                                  className="px-2.5 py-1 bg-[#ffa400] text-[#1b4264] font-extrabold rounded text-[10.5px] cursor-pointer"
+                                >
+                                  Approve
+                                </button>
+                              )}
+                              {u.status === "active" && (
+                                <button 
+                                  onClick={() => { setSelectedUser(u); setModalSuspend(true); }}
+                                  className="px-2.5 py-1 bg-white text-[#1b4264] hover:bg-slate-50 rounded border border-slate-300 cursor-pointer font-bold text-[10.5px]"
+                                >
+                                  Suspend
+                                </button>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            ),
+            defense: (
+              <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
+                <div className="flex justify-between items-center border-b border-slate-100 pb-2">
+                  <div>
+                    <h3 className="font-extrabold text-[#1b4264] text-[16px]">Defense Scheduling Management</h3>
+                    <p className="text-[11px] text-slate-400 font-bold">Assign presentation formats, schedules, venues, and coordinator evaluations.</p>
+                  </div>
+                  <button 
+                    onClick={() => setModalDefense(true)} 
+                    className="px-4 py-2 bg-[#ffa400] text-[#1b4264] font-extrabold rounded-lg border border-[#ffa400] shadow cursor-pointer text-[12px]"
+                  >
+                    Schedule Panel
+                  </button>
+                </div>
+                <div className="flex flex-col gap-3.5 mt-2">
+                  {defenses.map(d => (
+                    <div key={d.id} className="p-4 bg-slate-50 border border-slate-200 rounded-xl flex justify-between items-center text-[12.5px] shadow-sm">
+                      <div>
+                        <span className="font-bold text-[#1b4264] block">{d.title}</span>
+                        <span className="text-[11px] text-slate-500">{d.date} at {d.time} · Venue: {d.venue}</span>
+                        <span className="text-[10px] text-slate-400 block mt-1">Panelists: {d.panelists.join(", ")}</span>
+                      </div>
+                      <Tag variant="warn">{d.type}</Tag>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ),
+            projects: (
+              <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
+                <h3 className="font-extrabold text-[#1b4264] text-[16px]">Research Project Monitoring</h3>
+                <p className="text-[11px] text-slate-400 font-bold">Oversight indicators showing status indexes, advisee metadata, and milestones.</p>
+                <div className="flex flex-col gap-3.5 mt-2">
+                  {projects.map(p => (
+                    <div key={p.id} className="p-4 bg-slate-50 border border-slate-200 rounded-xl flex justify-between items-center text-[12.5px] shadow-sm">
+                      <div>
+                        <span className="font-bold text-[#1b4264] block">{p.title}</span>
+                        <span className="text-[11px] text-slate-500">Representative: {p.student} · Adviser: {p.adviser}</span>
+                      </div>
+                      <Tag variant={p.status === "completed" ? "success" : "warn"}>{p.status}</Tag>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ),
+            deadlines: (
+              <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
+                <div className="flex justify-between items-center border-b border-slate-100 pb-2">
+                  <div>
+                    <h3 className="font-extrabold text-[#1b4264] text-[16px]">Deadline & Academic Calendar Management</h3>
+                    <p className="text-[11px] text-slate-400 font-bold">Configure outline, compliance form, and final draft schedule boundaries.</p>
+                  </div>
+                  <button 
+                    onClick={() => setModalDeadline(true)} 
+                    className="px-4 py-2 bg-[#ffa400] text-[#1b4264] font-extrabold rounded-lg border border-[#ffa400] shadow cursor-pointer text-[12px]"
+                  >
+                    Add Deadline
+                  </button>
+                </div>
+                <div className="flex flex-col gap-3.5 mt-2">
+                  {deadlines.map(dl => (
+                    <div key={dl.id} className="p-4 bg-slate-50 border border-slate-200 rounded-xl flex justify-between items-center text-[12.5px] shadow-sm">
+                      <div>
+                        <span className="font-bold text-[#1b4264] block">{dl.title}</span>
+                        <span className="text-[11px] text-slate-500">Due Date: {dl.date}</span>
+                      </div>
+                      <Tag variant={dl.status === "completed" ? "success" : "warn"}>{dl.status}</Tag>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ),
+            certificates: (
+              <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
+                <div>
+                  <h3 className="font-extrabold text-[#1b4264] text-[16px]">Certificate of Completion Management</h3>
+                  <p className="text-[11px] text-slate-400 font-bold">Review eligibility requirements and generate official validation credentials.</p>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-2">
+                  
+                  {/* Completed Projects List */}
+                  <div className="border border-slate-200 rounded-xl p-4 flex flex-col gap-3 bg-white">
+                    <h4 className="font-extrabold text-[13px] text-[#1b4264] border-b border-slate-100 pb-2">Completed Research Status</h4>
+                    {projects.filter(p => p.status === "completed").map(proj => (
+                      <div key={proj.id} className="p-3 bg-white border border-slate-200 rounded-lg flex justify-between items-center text-[12px] shadow-sm">
+                        <div>
+                          <span className="font-bold text-slate-800 block">{proj.title}</span>
+                          <span className="text-[10px] text-slate-400">{proj.student} · Adviser: {proj.adviser}</span>
+                        </div>
+                        <button 
+                          onClick={() => { setCertProject(proj); setModalCert(true); }}
+                          className="px-3 py-1 bg-[#ffa400] hover:bg-[#e09000] text-[#1b4264] font-extrabold text-[11px] rounded shadow cursor-pointer border border-[#ffa400]"
+                        >
+                          Generate Cert
+                        </button>
+                      </div>
                     ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
-
-        {/* TAB 3: CERTIFICATES */}
-        {activeTab === "certificates" && (
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
-            <div>
-              <h3 className="font-extrabold text-[#1b4264] text-[16px]">Certificate of Completion Management</h3>
-              <p className="text-[11px] text-slate-400 font-bold">Review eligibility requirements and generate official validation credentials.</p>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-2">
-              
-              {/* Completed Projects List */}
-              <div className="border border-slate-200 rounded-xl p-4 flex flex-col gap-3 bg-white">
-                <h4 className="font-extrabold text-[13px] text-[#1b4264] border-b border-slate-100 pb-2">Completed Research Status</h4>
-                {projects.filter(p => p.status === "completed").map(proj => (
-                  <div key={proj.id} className="p-3 bg-white border border-slate-200 rounded-lg flex justify-between items-center text-[12px] shadow-sm">
-                    <div>
-                      <span className="font-bold text-slate-800 block">{proj.title}</span>
-                      <span className="text-[10px] text-slate-400">{proj.student} · Adviser: {proj.adviser}</span>
-                    </div>
-                    <button 
-                      onClick={() => { setCertProject(proj); setModalCert(true); }}
-                      className="px-3 py-1 bg-[#ffa400] hover:bg-[#e09000] text-[#1b4264] font-extrabold text-[11px] rounded shadow cursor-pointer border border-[#ffa400]"
-                    >
-                      Generate Cert
-                    </button>
                   </div>
-                ))}
-              </div>
 
-              {/* Generated Certificates List */}
-              <div className="border border-slate-200 rounded-xl p-4 flex flex-col gap-3 bg-white">
-                <h4 className="font-extrabold text-[13px] text-[#1b4264] border-b border-slate-100 pb-2">Generated Certificates Archive</h4>
-                {certificates.map(cert => (
-                  <div key={cert.id} className="p-3 bg-white border border-slate-200 rounded-lg flex justify-between items-center text-[12px] shadow-sm">
-                    <div>
-                      <span className="font-bold text-slate-800 block">{cert.project}</span>
-                      <span className="text-[10px] text-slate-400">{cert.student} · {cert.number || "No number yet"}</span>
-                    </div>
-                    <Tag variant={cert.status === "released" ? "success" : "warn"}>{cert.status}</Tag>
+                  {/* Generated Certificates List */}
+                  <div className="border border-slate-200 rounded-xl p-4 flex flex-col gap-3 bg-white">
+                    <h4 className="font-extrabold text-[13px] text-[#1b4264] border-b border-slate-100 pb-2">Released Certificates Archive</h4>
+                    {certificates.map(c => (
+                      <div key={c.id} className="p-3 bg-white border border-slate-200 rounded-lg flex justify-between items-center text-[12px] shadow-sm">
+                        <div>
+                          <span className="font-bold text-slate-800 block">{c.project}</span>
+                          <span className="text-[10px] text-[#1b4264] font-mono">{c.number} · {c.date}</span>
+                        </div>
+                        <Tag variant="success">{c.status}</Tag>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
 
-            </div>
-          </div>
-        )}
+                </div>
+              </div>
+            ),
+            reports: (
+              <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
+                <div className="flex justify-between items-center border-b border-slate-100 pb-2">
+                  <div>
+                    <h3 className="font-extrabold text-[#1b4264] text-[16px]">Report Generation</h3>
+                    <p className="text-[11px] text-slate-400 font-bold">Compile institutional metrics, adviser ratios, and performance indexes.</p>
+                  </div>
+                  <button 
+                    onClick={() => setModalExport(true)} 
+                    className="px-4 py-2 bg-[#ffa400] text-[#1b4264] font-extrabold rounded-lg border border-[#ffa400] shadow cursor-pointer text-[12px]"
+                  >
+                    Configure & Export Report
+                  </button>
+                </div>
+                <div className="bg-slate-50 p-4 border border-slate-200 rounded-xl text-[12.5px] mt-2 shadow-sm text-slate-650 flex flex-col gap-2">
+                  <div><strong>Recent Export Logs:</strong></div>
+                  <div>1. Active Proposals Summary — Excel · Jun 25, 2026</div>
+                  <div>2. Faculty Advisory Load Allocation — PDF · Jun 20, 2026</div>
+                </div>
+              </div>
+            ),
+            analytics: (
+              <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
+                <h3 className="font-extrabold text-[#1b4264] text-[16px]">Analytics Dashboard</h3>
+                <p className="text-[11px] text-slate-400 font-bold">Visual summaries showing college-wide capstone metrics averages.</p>
+                <div className="grid grid-cols-3 gap-4 mt-2">
+                  <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl shadow-sm text-center">
+                    <span className="text-[10px] text-slate-400 uppercase font-extrabold block">Avg Progress Rate</span>
+                    <span className="text-[20px] font-extrabold text-[#1b4264] block mt-1">75% Complete</span>
+                  </div>
+                  <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl shadow-sm text-center">
+                    <span className="text-[10px] text-slate-400 uppercase font-extrabold block">Graduation Clearance</span>
+                    <span className="text-[20px] font-extrabold text-[#ffa400] block mt-1">12 Approved</span>
+                  </div>
+                  <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl shadow-sm text-center">
+                    <span className="text-[10px] text-slate-400 uppercase font-extrabold block">Adviser Ratio</span>
+                    <span className="text-[20px] font-extrabold text-[#1b4264] block mt-1">1:4 CS Average</span>
+                  </div>
+                </div>
+              </div>
+            ),
+            repository: (
+              <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
+                <h3 className="font-extrabold text-[#1b4264] text-[16px]">Repository Management</h3>
+                <p className="text-[11px] text-slate-400 font-bold">Oversight indexes containing approved and QR-validated capstone documents.</p>
+                <div className="bg-slate-50 p-4 border border-slate-200 rounded-xl text-[12.5px] mt-2 shadow-sm text-slate-650 flex flex-col gap-2">
+                  <div><strong>Archived Projects:</strong> 12 Verified Systems</div>
+                  <div className="h-px bg-slate-200 my-1" />
+                  <div className="text-[11.5px] font-medium flex flex-col gap-2">
+                    <div>1. SECURE DECENTRALIZED GRADING SYSTEM (A.Y. 2025 CS)</div>
+                    <div>2. IOT SMART HOME HUB SECURITY (A.Y. 2025 IT)</div>
+                  </div>
+                </div>
+              </div>
+            ),
+            settings: (
+              <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
+                <h3 className="font-extrabold text-[#1b4264] text-[16px]">Portal Settings</h3>
+                <p className="text-[11px] text-slate-400 font-bold">Manage your notification channels, credential limits, and metadata formats.</p>
+                <div className="bg-slate-50 p-4 border border-slate-200 rounded-xl text-[12.5px] mt-2 flex flex-col gap-4 shadow-sm">
+                  <div className="flex justify-between items-center pb-3 border-b border-slate-200">
+                    <div>
+                      <span className="font-bold text-[#1b4264] block">Email Notifications</span>
+                      <span className="text-[10px] text-slate-400">Receive system notifications via email address.</span>
+                    </div>
+                    <input type="checkbox" defaultChecked className="accent-[#ffa400] w-4 h-4 cursor-pointer" />
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <span className="font-bold text-[#1b4264] block">Dark Mode</span>
+                      <span className="text-[10px] text-slate-400">Switch platform styling theme to night vision.</span>
+                    </div>
+                    <input type="checkbox" className="accent-[#ffa400] w-4 h-4 cursor-pointer" />
+                  </div>
+                </div>
+              </div>
+            ),
+          };
+
+          return tabContent[activeTab] || tabContent.overview;
+        })()}
 
       </main>
-
-      {/* ─── ADMINISTRATOR MODALS ─── */}
 
       {/* MODAL 1: APPROVE USER ACCOUNT */}
       {modalApprove && selectedUser && (

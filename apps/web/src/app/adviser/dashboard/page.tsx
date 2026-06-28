@@ -61,196 +61,274 @@ function AdviserDashboardContent() {
         </div>
       )}
 
-      {/* TOPBAR */}
-      <header className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between select-none">
-        <div>
-          <h1 className="text-[16px] font-extrabold text-[#1b4264]">Adviser Portal</h1>
-          <p className="text-[11px] text-slate-400 font-bold">Research Group Advising Oversight</p>
-        </div>
-        <div className="flex items-center gap-4">
-          <div className="relative cursor-pointer w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-[#1b4264] border border-slate-200 hover:bg-slate-100 transition">
-            <i className="ti ti-bell text-base" />
-            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-[#ffa400] rounded-full border border-white" />
-          </div>
-          <div className="h-8 w-px bg-slate-200" />
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-[#1b4264] flex items-center justify-center text-[12px] font-extrabold text-white">
-              RL
-            </div>
-            <div>
-              <div className="text-[12px] font-extrabold text-[#1b4264]">Dr. Rachel Lim</div>
-              <div className="text-[9px] text-slate-400 font-bold">Faculty Research Adviser</div>
-            </div>
-          </div>
-        </div>
-      </header>
-
       {/* MAIN CONTAINER */}
       <main className="flex-1 p-6 flex flex-col gap-6 overflow-y-auto">
         
-        {activeTab === "overview" && (
-          <>
-            {/* EXACT ADVISER CARDS */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-                <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#1b4264] flex items-center justify-center text-lg">
-                  <i className="ti ti-users" />
-                </div>
-                <div>
-                  <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Assigned Advisees</span>
-                  <span className="text-[18px] font-extrabold text-[#1b4264]">{advisees.length} Groups</span>
-                </div>
-              </div>
+        {(() => {
+          const tabContent: Record<string, React.ReactNode> = {
+            overview: (
+              <>
+                {/* EXACT ADVISER CARDS */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#1b4264] flex items-center justify-center text-lg">
+                      <i className="ti ti-users" />
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Assigned Advisees</span>
+                      <span className="text-[18px] font-extrabold text-[#1b4264]">{advisees.length} Groups</span>
+                    </div>
+                  </div>
 
-              <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-                <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#ffa400] flex items-center justify-center text-lg">
-                  <i className="ti ti-file-text" />
-                </div>
-                <div>
-                  <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Pending Reviews</span>
-                  <span className="text-[18px] font-extrabold text-[#1b4264]">{reviews.length} Documents</span>
-                </div>
-              </div>
+                  <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#ffa400] flex items-center justify-center text-lg">
+                      <i className="ti ti-file-text" />
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Pending Reviews</span>
+                      <span className="text-[18px] font-extrabold text-[#1b4264]">{reviews.length} Documents</span>
+                    </div>
+                  </div>
 
-              <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-                <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#1b4264] flex items-center justify-center text-lg">
-                  <i className="ti ti-calendar" />
-                </div>
-                <div>
-                  <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Scheduled Consults</span>
-                  <span className="text-[18px] font-extrabold text-[#1b4264]">{consultations.length} Meetings</span>
-                </div>
-              </div>
+                  <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#1b4264] flex items-center justify-center text-lg">
+                      <i className="ti ti-calendar" />
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Recent Consultations</span>
+                      <span className="text-[18px] font-extrabold text-[#ffa400]">4 Records</span>
+                    </div>
+                  </div>
 
-              <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-                <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#1b4264] flex items-center justify-center text-lg">
-                  <i className="ti ti-presentation" />
+                  <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#1b4264] flex items-center justify-center text-lg">
+                      <i className="ti ti-bell" />
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Notifications</span>
+                      <span className="text-[18px] font-extrabold text-[#1b4264]">{notifications.length} Alerts</span>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Groups Monitored</span>
-                  <span className="text-[18px] font-extrabold text-[#1b4264]">{advisees.length} Active</span>
-                </div>
-              </div>
 
-              <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-                <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#ffa400] flex items-center justify-center text-lg">
-                  <i className="ti ti-circle-check" />
-                </div>
-                <div>
-                  <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Milestones for Approval</span>
-                  <span className="text-[18px] font-extrabold text-[#1b4264]">{approvals.length} Milestones</span>
-                </div>
-              </div>
+                {/* Quick summaries */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col gap-3">
+                    <h3 className="font-extrabold text-[#1b4264] text-[14px]">Pending Milestone Approvals</h3>
+                    <div className="flex flex-col gap-2.5">
+                      {approvals.map(a => (
+                        <div key={a.id} className="flex justify-between items-center p-2.5 bg-slate-50 border border-slate-200 rounded text-[12px]">
+                          <div>
+                            <span className="font-bold text-[#1b4264] block">{a.groupName}</span>
+                            <span className="text-[10px] text-slate-450">{a.milestone}</span>
+                          </div>
+                          <button onClick={()=>handleApproveMilestone(a.id, a.groupName)} className="px-2.5 py-1 bg-[#ffa400] text-[#1b4264] font-extrabold text-[10px] rounded border border-[#ffa400] cursor-pointer">
+                            Approve
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
 
-              <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-                <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#ffa400] flex items-center justify-center text-lg">
-                  <i className="ti ti-history" />
+                  <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col gap-3">
+                    <h3 className="font-extrabold text-[#1b4264] text-[14px]">Upcoming Scheduled Consultations</h3>
+                    <div className="flex flex-col gap-2.5">
+                      {consultations.map(c => (
+                        <div key={c.id} className="p-2.5 bg-slate-50 border border-slate-200 rounded text-[12px] flex justify-between items-center">
+                          <div>
+                            <span className="font-bold text-slate-800 block">{c.topic}</span>
+                            <span className="text-[10px] text-slate-400">{c.groupName} · {c.time}</span>
+                          </div>
+                          <Tag variant="success">{c.mode}</Tag>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Recent Consultations</span>
-                  <span className="text-[18px] font-extrabold text-[#ffa400]">4 Records</span>
-                </div>
-              </div>
-
-              <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-                <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#1b4264] flex items-center justify-center text-lg">
-                  <i className="ti ti-bell" />
-                </div>
-                <div>
-                  <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Notifications</span>
-                  <span className="text-[18px] font-extrabold text-[#1b4264]">{notifications.length} Alerts</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Quick summaries */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col gap-3">
-                <h3 className="font-extrabold text-[#1b4264] text-[14px]">Pending Milestone Approvals</h3>
-                <div className="flex flex-col gap-2.5">
-                  {approvals.map(a => (
-                    <div key={a.id} className="flex justify-between items-center p-2.5 bg-slate-50 border border-slate-200 rounded text-[12px]">
+              </>
+            ),
+            advisees: (
+              <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
+                <h3 className="font-extrabold text-[#1b4264] text-[16px]">Assigned Advisees</h3>
+                <p className="text-[11px] text-slate-400 font-bold">List of research student groups under your advisory monitoring panel.</p>
+                <div className="flex flex-col gap-3 mt-2">
+                  {advisees.map(adv => (
+                    <div key={adv.id} className="p-4 bg-slate-50 border border-slate-200 rounded-xl flex justify-between items-center text-[12.5px] shadow-sm">
                       <div>
-                        <span className="font-bold text-[#1b4264] block">{a.groupName}</span>
-                        <span className="text-[10px] text-slate-450">{a.milestone}</span>
+                        <span className="font-bold text-[#1b4264] block">{adv.groupName}</span>
+                        <span className="text-[11px] text-slate-500">{adv.projectTitle} · Representative: {adv.leader}</span>
                       </div>
-                      <button onClick={()=>handleApproveMilestone(a.id, a.groupName)} className="px-2.5 py-1 bg-[#ffa400] text-[#1b4264] font-extrabold text-[10px] rounded border border-[#ffa400] cursor-pointer">
-                        Approve
-                      </button>
+                      <Tag variant="success">{adv.status}</Tag>
                     </div>
                   ))}
                 </div>
               </div>
-
-              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col gap-3">
-                <h3 className="font-extrabold text-[#1b4264] text-[14px]">Upcoming Scheduled Consultations</h3>
-                <div className="flex flex-col gap-2.5">
-                  {consultations.map(c => (
-                    <div key={c.id} className="p-2.5 bg-slate-50 border border-slate-200 rounded text-[12px] flex justify-between items-center">
+            ),
+            reviews: (
+              <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
+                <h3 className="font-extrabold text-[#1b4264] text-[16px]">Research Document Review & Commenting</h3>
+                <p className="text-[11px] text-slate-400 font-bold">Review draft submissions, download version history, and submit comments.</p>
+                {reviews.map(rev => (
+                  <div key={rev.id} className="p-4 bg-slate-50 border border-slate-200 rounded-xl flex flex-col gap-3 text-[12.5px] shadow-sm">
+                    <div className="flex justify-between items-center border-b border-slate-150 pb-2">
                       <div>
-                        <span className="font-bold text-slate-800 block">{c.topic}</span>
-                        <span className="text-[10px] text-slate-400">{c.groupName} · {c.time}</span>
+                        <span className="font-bold text-[#1b4264] block">{rev.docName}</span>
+                        <span className="text-[10px] text-slate-400">{rev.groupName} · {rev.milestone}</span>
+                      </div>
+                      <button onClick={()=>triggerToast("Downloading draft files.")} className="text-[#ffa400] font-bold hover:underline cursor-pointer">
+                        Download File
+                      </button>
+                    </div>
+                    <div className="flex flex-col gap-1.5 mt-1">
+                      <label className="font-bold text-slate-600 text-[11px]">Submit Review Comments</label>
+                      <textarea 
+                        value={commentInput} 
+                        onChange={(e)=>setCommentInput(e.target.value)} 
+                        placeholder="Provide detailed feedback comments..." 
+                        className="bg-white border border-slate-350 rounded-lg p-2.5 text-[12px] focus:outline-none" 
+                      />
+                      <button onClick={()=>handleReviewComment(rev.id)} className="px-4 py-2 bg-[#ffa400] text-[#1b4264] font-extrabold rounded-lg border border-[#ffa400] self-start mt-2">
+                        Submit Comments
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ),
+            consultations: (
+              <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
+                <h3 className="font-extrabold text-[#1b4264] text-[16px]">Consultation Schedule Management</h3>
+                <p className="text-[11px] text-slate-400 font-bold">Monitor appointments, schedule zoom calls, and review advisor requests.</p>
+                <div className="flex flex-col gap-3.5 mt-2">
+                  {consultations.map(c => (
+                    <div key={c.id} className="p-4 bg-slate-50 border border-slate-200 rounded-xl flex justify-between items-center text-[12.5px] shadow-sm">
+                      <div>
+                        <span className="font-bold text-[#1b4264] block">{c.topic}</span>
+                        <span className="text-[10.5px] text-slate-450">{c.groupName} · {c.date} at {c.time}</span>
                       </div>
                       <Tag variant="success">{c.mode}</Tag>
                     </div>
                   ))}
                 </div>
               </div>
-            </div>
-          </>
-        )}
-
-        {/* TAB 2: ASSIGNED ADVISEES */}
-        {activeTab === "advisees" && (
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
-            <h3 className="font-extrabold text-[#1b4264] text-[16px]">Assigned Advisees</h3>
-            <p className="text-[11px] text-slate-400 font-bold">List of research student groups under your advisory monitoring panel.</p>
-            <div className="flex flex-col gap-3 mt-2">
-              {advisees.map(adv => (
-                <div key={adv.id} className="p-4 bg-slate-50 border border-slate-200 rounded-xl flex justify-between items-center text-[12.5px] shadow-sm">
-                  <div>
-                    <span className="font-bold text-[#1b4264] block">{adv.groupName}</span>
-                    <span className="text-[11px] text-slate-500">{adv.projectTitle} · Representative: {adv.leader}</span>
-                  </div>
-                  <Tag variant="success">{adv.status}</Tag>
+            ),
+            progress: (
+              <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
+                <h3 className="font-extrabold text-[#1b4264] text-[16px]">Research Group Progress Monitoring</h3>
+                <p className="text-[11px] text-slate-400 font-bold">Oversight indicators showing project progression across all assigned advisees.</p>
+                <div className="flex flex-col gap-4 mt-2">
+                  {advisees.map(adv => (
+                    <div key={adv.id} className="bg-slate-50 p-4 border border-slate-200 rounded-xl shadow-sm flex flex-col gap-3">
+                      <div className="flex justify-between items-center text-[12px] font-extrabold text-[#1b4264]">
+                        <span>{adv.groupName} · {adv.projectTitle}</span>
+                        <span className="font-mono text-[#ffa400]">40% COMPLETE</span>
+                      </div>
+                      <div className="w-full bg-slate-200 rounded-full h-2.5 overflow-hidden">
+                        <div className="bg-gradient-to-r from-[#1b4264] to-[#ffa400] h-full rounded-full" style={{ width: "40%" }} />
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* TAB 4: DOCUMENT REVIEW */}
-        {activeTab === "reviews" && (
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
-            <h3 className="font-extrabold text-[#1b4264] text-[16px]">Research Document Review & Commenting</h3>
-            <p className="text-[11px] text-slate-400 font-bold">Review draft submissions, download version history, and submit comments.</p>
-            {reviews.map(rev => (
-              <div key={rev.id} className="p-4 bg-slate-50 border border-slate-200 rounded-xl flex flex-col gap-3 text-[12.5px] shadow-sm">
-                <div className="flex justify-between items-center border-b border-slate-150 pb-2">
-                  <div>
-                    <span className="font-bold text-[#1b4264] block">{rev.docName}</span>
-                    <span className="text-[10px] text-slate-400">{rev.groupName} · {rev.milestone}</span>
-                  </div>
-                  <button onClick={()=>triggerToast("Downloading draft files.")} className="text-[#ffa400] font-bold hover:underline cursor-pointer">
-                    Download File
-                  </button>
+              </div>
+            ),
+            approvals: (
+              <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
+                <h3 className="font-extrabold text-[#1b4264] text-[16px]">Milestone Approval & Recommendation</h3>
+                <p className="text-[11px] text-slate-400 font-bold">Approve core outline thresholds and issue recommendations for oral review panels.</p>
+                <div className="flex flex-col gap-3 mt-2">
+                  {approvals.map(a => (
+                    <div key={a.id} className="p-4 bg-slate-50 border border-slate-200 rounded-xl flex justify-between items-center text-[12.5px] shadow-sm">
+                      <div>
+                        <span className="font-bold text-[#1b4264] block">{a.groupName}</span>
+                        <span className="text-[10px] text-slate-450">Target Milestone: {a.milestone}</span>
+                      </div>
+                      <button onClick={()=>handleApproveMilestone(a.id, a.groupName)} className="px-3.5 py-1.5 bg-[#ffa400] text-[#1b4264] font-extrabold text-[11px] rounded border border-[#ffa400] cursor-pointer">
+                        Approve Milestone
+                      </button>
+                    </div>
+                  ))}
+                  {approvals.length === 0 && (
+                    <div className="text-[12px] text-slate-400 font-medium text-center py-4">No pending milestone approval requests.</div>
+                  )}
                 </div>
-                <div className="flex flex-col gap-1.5 mt-1">
-                  <label className="font-bold text-slate-600 text-[11px]">Submit Review Comments</label>
-                  <textarea 
-                    value={commentInput} 
-                    onChange={(e)=>setCommentInput(e.target.value)} 
-                    placeholder="Provide detailed feedback comments..." 
-                    className="bg-white border border-slate-350 rounded-lg p-2.5 text-[12px] focus:outline-none" 
-                  />
-                  <button onClick={()=>handleReviewComment(rev.id)} className="px-4 py-2 bg-[#ffa400] text-[#1b4264] font-extrabold rounded-lg border border-[#ffa400] self-start mt-2">
-                    Submit Comments
+              </div>
+            ),
+            history: (
+              <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
+                <h3 className="font-extrabold text-[#1b4264] text-[16px]">Consultation History Records</h3>
+                <p className="text-[11px] text-slate-400 font-bold">Access historical meeting schedules, notes, and log registries.</p>
+                <div className="bg-slate-50 p-4 border border-slate-200 rounded-xl text-[12.5px] mt-2 flex flex-col gap-2.5 shadow-sm text-slate-550">
+                  <div><strong>Total Consultations Logged:</strong> 4 Sessions</div>
+                  <div><strong>Average Duration:</strong> 45 minutes</div>
+                  <div className="h-px bg-slate-200 my-2" />
+                  <div className="text-[11.5px] font-medium flex flex-col gap-2">
+                    <div>1. July 03, 2026 — Topic: Neural Network Layers (Scheduled)</div>
+                    <div>2. June 20, 2026 — Topic: Dataset Cleaning & Preparation (Completed)</div>
+                    <div>3. June 15, 2026 — Topic: Literature Review Framework (Completed)</div>
+                  </div>
+                </div>
+              </div>
+            ),
+            conferencing: (
+              <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
+                <h3 className="font-extrabold text-[#1b4264] text-[16px]">In-App Voice and Video Group Conferencing</h3>
+                <p className="text-[11px] text-slate-400 font-bold">Initiate peer study room conferences or sync appointments with advisees.</p>
+                <div className="bg-slate-50 p-6 border border-slate-200 rounded-xl text-center flex flex-col gap-4 shadow-sm">
+                  <div className="w-16 h-16 bg-[#1b4264]/10 rounded-full flex items-center justify-center mx-auto text-[#1b4264]">
+                    <i className="ti ti-video text-3xl animate-pulse" />
+                  </div>
+                  <div>
+                    <span className="font-bold text-[#1b4264] text-[14px] block">Live Stream Channels Ready</span>
+                    <span className="text-[10.5px] text-slate-400">Join call for Group AI-CCS-01 or Group IoT-IT-03</span>
+                  </div>
+                  <button onClick={() => triggerToast("Initializing live voice & video stream...")} className="px-4 py-2 bg-[#ffa400] text-[#1b4264] hover:bg-[#e09000] font-extrabold rounded-lg shadow border border-[#ffa400] self-center cursor-pointer transition-colors">
+                    Start Stream Conference
                   </button>
                 </div>
               </div>
-            ))}
-          </div>
-        )}
+            ),
+            defense: (
+              <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
+                <h3 className="font-extrabold text-[#1b4264] text-[16px]">Defense Schedule Viewing</h3>
+                <p className="text-[11px] text-slate-400 font-bold">Review defense panel timings, assignees, and digital venues.</p>
+                <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl text-[12.5px] flex flex-col gap-2 mt-2 shadow-sm">
+                  <div className="flex justify-between items-center">
+                    <span className="font-extrabold text-[#1b4264] text-[14px]">AI Crop Yield Prediction System ML</span>
+                    <Tag variant="warn">Proposal Defense</Tag>
+                  </div>
+                  <div className="text-slate-500 font-medium">
+                    <div><strong>Date / Time:</strong> 2026-07-10 at 10:00 AM</div>
+                    <div><strong>Venue:</strong> CCS Seminar Hall</div>
+                  </div>
+                </div>
+              </div>
+            ),
+            settings: (
+              <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
+                <h3 className="font-extrabold text-[#1b4264] text-[16px]">Portal Settings</h3>
+                <p className="text-[11px] text-slate-400 font-bold">Manage your notification channels, authentication credentials, and user preferences.</p>
+                <div className="bg-slate-50 p-4 border border-slate-200 rounded-xl text-[12.5px] mt-2 flex flex-col gap-4 shadow-sm">
+                  <div className="flex justify-between items-center pb-3 border-b border-slate-200">
+                    <div>
+                      <span className="font-bold text-[#1b4264] block">Email Notifications</span>
+                      <span className="text-[10px] text-slate-400">Receive system notifications via email address.</span>
+                    </div>
+                    <input type="checkbox" defaultChecked className="accent-[#ffa400] w-4 h-4 cursor-pointer" />
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <span className="font-bold text-[#1b4264] block">Dark Mode</span>
+                      <span className="text-[10px] text-slate-400">Switch platform styling theme to night vision.</span>
+                    </div>
+                    <input type="checkbox" className="accent-[#ffa400] w-4 h-4 cursor-pointer" />
+                  </div>
+                </div>
+              </div>
+            ),
+          };
+
+          return tabContent[activeTab] || tabContent.overview;
+        })()}
 
       </main>
 

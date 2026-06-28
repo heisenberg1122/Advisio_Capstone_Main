@@ -1,0 +1,18 @@
+"use client";
+
+import { ProfileEditForm } from "@/components/profile/ProfileEditForm";
+
+export default function ProfessorEditProfilePage() {
+  return (
+    <div>
+      <div className="mb-6">
+        <h1 className="text-[18px] font-medium mb-0.5">Edit Profile</h1>
+        <p className="text-[13px] text-[var(--color-text-secondary)]">
+          Modify your profile details, department info, and specializations
+        </p>
+      </div>
+
+      <ProfileEditForm />
+    </div>
+  );
+}
