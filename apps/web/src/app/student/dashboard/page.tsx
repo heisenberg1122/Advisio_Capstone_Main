@@ -111,457 +111,445 @@ function StudentDashboardContent() {
         </div>
       )}
 
-      {/* TOPBAR */}
-      <header className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between select-none">
-        <div>
-          <h1 className="text-[16px] font-extrabold text-[#1b4264]">Student Portal</h1>
-          <p className="text-[11px] text-slate-400 font-bold">Research Group Access · College of Computer Studies</p>
-        </div>
-        <div className="flex items-center gap-4">
-          <div className="relative cursor-pointer w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-[#1b4264] border border-slate-200 hover:bg-slate-100 transition">
-            <i className="ti ti-bell text-base" />
-            <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-[#ffa400] rounded-full border border-white" />
-          </div>
-          <div className="h-8 w-px bg-slate-200" />
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-[#1b4264] flex items-center justify-center text-[12px] font-extrabold text-white">
-              JR
-            </div>
-            <div>
-              <div className="text-[12px] font-extrabold text-[#1b4264]">Juan Reyes</div>
-              <div className="text-[9px] text-slate-400 font-bold">Student Representative</div>
-            </div>
-          </div>
-        </div>
-      </header>
 
       {/* MAIN CONTAINER */}
       <main className="flex-1 p-6 flex flex-col gap-6 overflow-y-auto">
         
-        {/* TAB 1: OVERVIEW */}
-        {activeTab === "overview" && (
-          <>
-            {/* EXACT STUDENT CARDS */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-                <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#1b4264] flex items-center justify-center text-lg">
-                  <i className="ti ti-users" />
+        {(() => {
+          const tabTitles: Record<string, string> = {
+            overview: "Student Dashboard",
+            group: "Research Group Management",
+            milestones: "Project Milestones",
+            progress: "Progress Tracking",
+            submission: "Research Document Submission",
+            "version-control": "Document Version Control",
+            "adviser-credentials": "Adviser Credentials Hub",
+            "ai-recommendation": "AI Adviser Recommendation",
+            "consultation-requests": "Consultation Requests",
+            "consultation-repo": "Consultation Repository",
+            conferencing: "Group Conferencing",
+            defense: "Defense Schedule",
+            certificates: "Certificates of Completion",
+            settings: "Settings",
+            profile: "My Profile",
+            notifications: "Notifications",
+          };
+
+          const tabContent: Record<string, React.ReactNode> = {
+            overview: (
+              <>
+                {/* EXACT STUDENT CARDS */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#1b4264] flex items-center justify-center text-lg">
+                      <i className="ti ti-users" />
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Research Group Status</span>
+                      <span className="text-[15px] font-extrabold text-[#1b4264]">{group.name} ({group.status})</span>
+                    </div>
+                  </div>
+
+                  <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#ffa400] flex items-center justify-center text-lg">
+                      <i className="ti ti-brain" />
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Adviser Recs</span>
+                      <span className="text-[15px] font-extrabold text-[#1b4264]">{aiMatches[0].name} (98%)</span>
+                    </div>
+                  </div>
+
+                  <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#1b4264] flex items-center justify-center text-lg">
+                      <i className="ti ti-file-text" />
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Submitted Documents</span>
+                      <span className="text-[15px] font-extrabold text-[#1b4264]">{submissions.length} Uploads</span>
+                    </div>
+                  </div>
+
+                  <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#ffa400] flex items-center justify-center text-lg">
+                      <i className="ti ti-calendar-event" />
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Pending Consults</span>
+                      <span className="text-[15px] font-extrabold text-[#1b4264]">{consultations.filter(c=>c.status==='pending').length} Requested</span>
+                    </div>
+                  </div>
+
+                  <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col gap-2.5 justify-center min-h-[72px]">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#1b4264] flex items-center justify-center text-lg flex-shrink-0">
+                        <i className="ti ti-target" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold leading-none">Milestone Progress</span>
+                        <span className="text-[14.5px] font-extrabold text-[#1b4264] mt-1.5 block leading-none">20% Complete</span>
+                      </div>
+                    </div>
+                    <div className="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden border border-slate-200/50">
+                      <div 
+                        className="bg-gradient-to-r from-[#1b4264] to-[#ffa400] h-full rounded-full transition-all duration-500 ease-out animate-pulse" 
+                        style={{ width: "20%" }} 
+                      />
+                    </div>
+                  </div>
+
+                  <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#ffa400] flex items-center justify-center text-lg">
+                      <i className="ti ti-calendar" />
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Defense Schedule</span>
+                      <span className="text-[15px] font-extrabold text-[#1b4264]">July 10, 2026</span>
+                    </div>
+                  </div>
+
+                  <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#ffa400] flex items-center justify-center text-lg">
+                      <i className="ti ti-certificate" />
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Certificate Status</span>
+                      <span className="text-[15px] font-extrabold text-[#1b4264]">Locked (Pending Oral)</span>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Research Group Status</span>
-                  <span className="text-[15px] font-extrabold text-[#1b4264]">{group.name} ({group.status})</span>
+
+                {/* Quick Summary View */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col gap-3">
+                    <h3 className="font-extrabold text-[#1b4264] text-[14px]">Active Study Information</h3>
+                    <div className="text-[12px] text-slate-650 flex flex-col gap-2">
+                      <div><strong>Title:</strong> {group.projectTitle}</div>
+                      <div><strong>Represented Group:</strong> {group.members.join(", ")}</div>
+                      <div><strong>Official Adviser:</strong> Dr. Rachel Lim</div>
+                    </div>
+                  </div>
+
+                  <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col gap-3">
+                    <h3 className="font-extrabold text-[#1b4264] text-[14px]">Upcoming Milestones</h3>
+                    <div className="flex flex-col gap-2.5">
+                      {milestones.slice(0, 3).map(m => (
+                        <div key={m.id} className="flex justify-between items-center text-[12.5px] p-2 bg-slate-50 border border-slate-200 rounded">
+                          <span className="font-bold text-[#1b4264]">{m.title}</span>
+                          <Tag variant={m.status==='completed'?'success':m.status==='in-progress'?'warn':'info'}>{m.status}</Tag>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </>
+            ),
+            profile: (
+              <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
+                <h3 className="font-extrabold text-[#1b4264] text-[16px]">Student profile Info</h3>
+                <p className="text-[11px] text-slate-400 font-bold">Edit your student representative details, institutional identity cards, and department classifications.</p>
+                <div className="flex flex-col gap-3 mt-2 text-[12px]">
+                  <div className="flex flex-col gap-1">
+                    <label className="font-bold text-slate-600">Student Name</label>
+                    <input type="text" readOnly value="Juan Reyes" className="bg-slate-50 border border-slate-200 p-2.5 rounded-lg focus:outline-none" />
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="font-bold text-slate-600">Represented Department</label>
+                    <input type="text" readOnly value="College of Computer Studies" className="bg-slate-50 border border-slate-200 p-2.5 rounded-lg focus:outline-none" />
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="font-bold text-slate-600">Student ID Number</label>
+                    <input type="text" readOnly value="2023-10045" className="bg-slate-50 border border-slate-200 p-2.5 rounded-lg focus:outline-none" />
+                  </div>
                 </div>
               </div>
-
-              <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-                <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#ffa400] flex items-center justify-center text-lg">
-                  <i className="ti ti-brain" />
-                </div>
-                <div>
-                  <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Adviser Recs</span>
-                  <span className="text-[15px] font-extrabold text-[#1b4264]">{aiMatches[0].name} (98%)</span>
-                </div>
-              </div>
-
-              <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-                <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#1b4264] flex items-center justify-center text-lg">
-                  <i className="ti ti-file-text" />
-                </div>
-                <div>
-                  <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Submitted Documents</span>
-                  <span className="text-[15px] font-extrabold text-[#1b4264]">{submissions.length} Uploads</span>
+            ),
+            group: (
+              <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
+                <h3 className="font-extrabold text-[#1b4264] text-[16px]">Research Group Management</h3>
+                <p className="text-[11px] text-slate-400 font-bold">Organize peer study divisions, invitation codes, and collaborative assignments.</p>
+                <div className="bg-slate-50 p-4 border border-slate-200 rounded-xl text-[12.5px] mt-2 flex flex-col gap-2 shadow-sm">
+                  <div className="font-bold text-[#1b4264]">Group Identifier: {group.name}</div>
+                  <div><strong>Active Title:</strong> {group.projectTitle}</div>
+                  <div><strong>Group Members:</strong> {group.members.join(", ")}</div>
                 </div>
               </div>
-
-              <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-                <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#ffa400] flex items-center justify-center text-lg">
-                  <i className="ti ti-calendar-event" />
-                </div>
-                <div>
-                  <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Pending Consults</span>
-                  <span className="text-[15px] font-extrabold text-[#1b4264]">{consultations.filter(c=>c.status==='pending').length} Requested</span>
-                </div>
-              </div>
-
-              <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-                <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#1b4264] flex items-center justify-center text-lg">
-                  <i className="ti ti-target" />
-                </div>
-                <div>
-                  <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Milestone Progress</span>
-                  <span className="text-[15px] font-extrabold text-[#1b4264]">20% Complete</span>
-                </div>
-              </div>
-
-              <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-                <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#ffa400] flex items-center justify-center text-lg">
-                  <i className="ti ti-calendar" />
-                </div>
-                <div>
-                  <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Defense Schedule</span>
-                  <span className="text-[15px] font-extrabold text-[#1b4264]">July 10, 2026</span>
+            ),
+            "adviser-credentials": (
+              <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
+                <h3 className="font-extrabold text-[#1b4264] text-[16px]">Adviser Credentials Hub</h3>
+                <p className="text-[11px] text-slate-400 font-bold">View faculty profiles, research expertise indices, and verified publication records.</p>
+                <div className="flex flex-col gap-3.5 mt-2">
+                  <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl flex justify-between items-center text-[12.5px] shadow-sm">
+                    <div>
+                      <span className="font-extrabold text-[#1b4264] block">Dr. Rachel Lim</span>
+                      <span className="text-[11px] text-slate-500">Expertise: Machine Learning, Computer Vision, Neural Nets</span>
+                    </div>
+                    <Tag variant="success">Available</Tag>
+                  </div>
+                  <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl flex justify-between items-center text-[12.5px] shadow-sm">
+                    <div>
+                      <span className="font-extrabold text-[#1b4264] block">Dr. Lisa Wong</span>
+                      <span className="text-[11px] text-slate-500">Expertise: Data Infrastructures, Cryptographic Security Systems</span>
+                    </div>
+                    <Tag variant="success">Available</Tag>
+                  </div>
                 </div>
               </div>
-
-              <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-                <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#1b4264] flex items-center justify-center text-lg">
-                  <i className="ti ti-bell" />
-                </div>
-                <div>
-                  <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Notifications</span>
-                  <span className="text-[15px] font-extrabold text-[#1b4264]">{notifications.length} Alerts</span>
+            ),
+            "ai-recommendation": (
+              <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
+                <h3 className="font-extrabold text-[#1b4264] text-[16px]">AI Adviser Recommendation</h3>
+                <p className="text-[11px] text-slate-400 font-bold">Generate optimized matches based on topic alignment algorithms.</p>
+                <div className="flex flex-col gap-3.5 mt-2 text-[12px]">
+                  <div className="flex gap-2">
+                    <input 
+                      type="text" 
+                      value={topicInput}
+                      onChange={(e)=>setTopicInput(e.target.value)}
+                      placeholder="Enter your research keywords (e.g., Computer Vision, CNN)..." 
+                      className="bg-white border border-slate-350 rounded-lg p-2.5 flex-1 focus:outline-none focus:border-[#ffa400]" 
+                    />
+                    <button 
+                      onClick={() => triggerToast("Generated matches successfully.")} 
+                      className="px-4 py-2 bg-[#ffa400] text-[#1b4264] hover:bg-[#e09000] font-extrabold rounded-lg shadow-md border border-[#ffa400]"
+                    >
+                      Find Match
+                    </button>
+                  </div>
+                  <div className="flex flex-col gap-2 mt-2">
+                    {aiMatches.map(m => (
+                      <div key={m.name} className="p-3 bg-slate-50 border border-slate-200 rounded-lg flex justify-between items-center shadow-sm">
+                        <div>
+                          <span className="font-bold text-[#1b4264]">{m.name}</span>
+                        </div>
+                        <span className="font-mono text-[#ffa400] font-extrabold text-[12px]">{m.match} match</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
-
-              <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
-                <div className="w-10 h-10 rounded-lg bg-[#1b4264]/10 text-[#ffa400] flex items-center justify-center text-lg">
-                  <i className="ti ti-certificate" />
-                </div>
-                <div>
-                  <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Certificate Status</span>
-                  <span className="text-[15px] font-extrabold text-[#1b4264]">Locked (Pending Oral)</span>
+            ),
+            conferencing: (
+              <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
+                <h3 className="font-extrabold text-[#1b4264] text-[16px]">In-App Voice and Video Group Conferencing</h3>
+                <p className="text-[11px] text-slate-400 font-bold">Coordinate with peers and advisers using localized sandbox stream channels.</p>
+                <div className="bg-slate-50 p-6 border border-slate-200 rounded-xl text-center flex flex-col gap-4 shadow-sm">
+                  <div className="w-16 h-16 bg-[#1b4264]/10 rounded-full flex items-center justify-center mx-auto text-[#1b4264]">
+                    <i className="ti ti-video text-3xl animate-pulse" />
+                  </div>
+                  <div>
+                    <span className="font-bold text-[#1b4264] text-[14px] block">Live Stream Channel Available</span>
+                    <span className="text-[10.5px] text-slate-400">Current Room ID: <strong>Group AI-CCS-01</strong></span>
+                  </div>
+                  <button 
+                    onClick={() => setModalJoinConferencing(true)} 
+                    className="px-4 py-2 bg-[#ffa400] text-[#1b4264] hover:bg-[#e09000] font-extrabold rounded-lg shadow border border-[#ffa400] self-center cursor-pointer transition-colors"
+                  >
+                    Join Channel Stream
+                  </button>
                 </div>
               </div>
-            </div>
-
-            {/* Quick Summary View */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col gap-3">
-                <h3 className="font-extrabold text-[#1b4264] text-[14px]">Active Study Information</h3>
-                <div className="text-[12px] text-slate-650 flex flex-col gap-2">
-                  <div><strong>Title:</strong> {group.projectTitle}</div>
-                  <div><strong>Represented Group:</strong> {group.members.join(", ")}</div>
-                  <div><strong>Official Adviser:</strong> Dr. Rachel Lim</div>
-                </div>
+            ),
+            submission: (
+              <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
+                <h3 className="font-extrabold text-[#1b4264] text-[16px]">Research Document Submission</h3>
+                <p className="text-[11px] text-slate-400 font-bold">Upload draft files and outline scopes directly to assigned reviewers.</p>
+                <form onSubmit={handleUploadDoc} className="flex flex-col gap-3 mt-2 text-[12px]">
+                  <div className="flex flex-col gap-1">
+                    <label className="font-bold text-slate-600">Select Document Type</label>
+                    <select value={uploadMilestone} onChange={(e)=>setUploadMilestone(e.target.value)} className="bg-white border border-slate-350 rounded-lg p-2.5 focus:outline-none">
+                      <option value="Proposal Outline">Proposal Outline</option>
+                      <option value="Draft Submission">Chapter 1-3 Review Draft</option>
+                      <option value="Ethics Application">Ethics Application Forms</option>
+                    </select>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="font-bold text-slate-600">Document Name</label>
+                    <input required type="text" value={uploadFileName} onChange={(e)=>setUploadFileName(e.target.value)} className="bg-white border border-slate-350 rounded-lg p-2.5 focus:outline-none" />
+                  </div>
+                  <button type="submit" className="px-4 py-2 bg-[#ffa400] text-[#1b4264] hover:bg-[#e09000] font-extrabold rounded-lg shadow border border-[#ffa400] self-start mt-2">
+                    Submit Draft
+                  </button>
+                </form>
               </div>
-
-              <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col gap-3">
-                <h3 className="font-extrabold text-[#1b4264] text-[14px]">Upcoming Milestones</h3>
-                <div className="flex flex-col gap-2.5">
-                  {milestones.slice(0, 3).map(m => (
-                    <div key={m.id} className="flex justify-between items-center text-[12.5px] p-2 bg-slate-50 border border-slate-200 rounded">
-                      <span className="font-bold text-[#1b4264]">{m.title}</span>
-                      <Tag variant={m.status==='completed'?'success':m.status==='in-progress'?'warn':'info'}>{m.status}</Tag>
+            ),
+            "version-control": (
+              <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
+                <h3 className="font-extrabold text-[#1b4264] text-[16px]">Document Version Control</h3>
+                <p className="text-[11px] text-slate-400 font-bold">Monitor historical draft changes, track comments, and compare version indexes.</p>
+                <div className="flex flex-col gap-3.5 mt-2">
+                  {submissions.map(sub => (
+                    <div key={sub.id} className="p-4 bg-slate-50 border border-slate-200 rounded-xl flex justify-between items-center text-[12.5px] shadow-sm">
+                      <div>
+                        <span className="font-bold text-[#1b4264] block">{sub.docName}</span>
+                        <span className="text-[10px] text-slate-400">Version: {sub.version} · Date: {sub.date}</span>
+                      </div>
+                      <Tag variant={sub.status === "approved" ? "success" : "warn"}>{sub.status}</Tag>
                     </div>
                   ))}
                 </div>
               </div>
-            </div>
-          </>
-        )}
-
-        {/* TAB 2: PROFILE MANAGEMENT */}
-        {activeTab === "profile" && (
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
-            <h3 className="font-extrabold text-[#1b4264] text-[16px]">Profile Management</h3>
-            <p className="text-[11px] text-slate-400 font-bold">Configure student identification records and institutional routing configurations.</p>
-            <div className="grid grid-cols-2 gap-4 text-[12px] mt-2">
-              <div className="flex flex-col gap-1">
-                <span className="font-bold text-slate-500">Student Name</span>
-                <input type="text" readOnly value="Juan Reyes" className="bg-slate-50 border border-slate-200 p-2.5 rounded-lg focus:outline-none" />
-              </div>
-              <div className="flex flex-col gap-1">
-                <span className="font-bold text-slate-500">Institutional ID Number</span>
-                <input type="text" readOnly value="2023-10045" className="bg-slate-50 border border-slate-200 p-2.5 rounded-lg focus:outline-none" />
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* TAB 3: GROUP MANAGEMENT */}
-        {activeTab === "group" && (
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
-            <h3 className="font-extrabold text-[#1b4264] text-[16px]">Research Group Management</h3>
-            <p className="text-[11px] text-slate-400 font-bold">Organize peer study divisions, invitation codes, and collaborative assignments.</p>
-            <div className="bg-slate-50 p-4 border border-slate-200 rounded-xl text-[12.5px] mt-2 flex flex-col gap-2 shadow-sm">
-              <div className="font-bold text-[#1b4264]">Group Identifier: {group.name}</div>
-              <div><strong>Active Title:</strong> {group.projectTitle}</div>
-              <div><strong>Group Members:</strong> {group.members.join(", ")}</div>
-            </div>
-          </div>
-        )}
-
-        {/* TAB 4: ADVISER CREDENTIALS */}
-        {activeTab === "adviser-credentials" && (
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
-            <h3 className="font-extrabold text-[#1b4264] text-[16px]">Adviser Credentials Hub</h3>
-            <p className="text-[11px] text-slate-400 font-bold">View faculty profiles, research expertise indices, and verified publication records.</p>
-            <div className="flex flex-col gap-3.5 mt-2">
-              <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl flex justify-between items-center text-[12.5px] shadow-sm">
-                <div>
-                  <span className="font-extrabold text-[#1b4264] block">Dr. Rachel Lim</span>
-                  <span className="text-[11px] text-slate-500">Expertise: Machine Learning, Computer Vision, Neural Nets</span>
-                </div>
-                <Tag variant="success">Available</Tag>
-              </div>
-              <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl flex justify-between items-center text-[12.5px] shadow-sm">
-                <div>
-                  <span className="font-extrabold text-[#1b4264] block">Dr. Lisa Wong</span>
-                  <span className="text-[11px] text-slate-500">Expertise: Data Infrastructures, Cryptographic Security Systems</span>
-                </div>
-                <Tag variant="success">Available</Tag>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* TAB 5: AI RECOMMENDATION */}
-        {activeTab === "ai-recommendation" && (
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
-            <h3 className="font-extrabold text-[#1b4264] text-[16px]">AI Adviser Recommendation</h3>
-            <p className="text-[11px] text-slate-400 font-bold">Generate optimized matches based on topic alignment algorithms.</p>
-            <div className="flex flex-col gap-3.5 mt-2 text-[12px]">
-              <div className="flex gap-2">
-                <input 
-                  type="text" 
-                  value={topicInput}
-                  onChange={(e)=>setTopicInput(e.target.value)}
-                  placeholder="Enter your research keywords (e.g., Computer Vision, CNN)..." 
-                  className="bg-white border border-slate-350 rounded-lg p-2.5 flex-1 focus:outline-none focus:border-[#ffa400]" 
-                />
-                <button 
-                  onClick={() => triggerToast("Generated matches successfully.")} 
-                  className="px-4 py-2 bg-[#ffa400] text-[#1b4264] hover:bg-[#e09000] font-extrabold rounded-lg shadow-md border border-[#ffa400]"
-                >
-                  Match
-                </button>
-              </div>
-              <div className="flex flex-col gap-3">
-                {aiMatches.map(rec => (
-                  <div key={rec.name} className="p-3 bg-slate-50 border border-slate-200 rounded-lg flex justify-between items-center shadow-sm">
-                    <div>
-                      <span className="font-bold text-[#1b4264] block">{rec.name}</span>
-                      <span className="text-[11px] text-slate-400">{rec.expertise}</span>
+            ),
+            milestones: (
+              <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
+                <h3 className="font-extrabold text-[#1b4264] text-[16px]">Project Milestones</h3>
+                <p className="text-[11px] text-slate-400 font-bold">View sequence boundaries, check tasks list, and monitor lock states.</p>
+                <div className="flex flex-col gap-2.5 mt-2">
+                  {milestones.map(m => (
+                    <div key={m.id} className="p-3 bg-slate-50 border border-slate-200 rounded-lg flex justify-between items-center text-[12.5px] shadow-sm">
+                      <div>
+                        <span className="font-bold text-[#1b4264] block">{m.title}</span>
+                      </div>
+                      <Tag variant={m.status === 'completed' ? 'success' : m.status === 'in-progress' ? 'warn' : 'info'}>{m.status}</Tag>
                     </div>
-                    <span className="font-extrabold text-[#ffa400] text-[13.5px]">{rec.match}% Match</span>
+                  ))}
+                </div>
+              </div>
+            ),
+            "consultation-requests": (
+              <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
+                <h3 className="font-extrabold text-[#1b4264] text-[16px]">Consultation Requests</h3>
+                <p className="text-[11px] text-slate-400 font-bold">Book voice or messaging slots with designated coordinators and advisers.</p>
+                <form onSubmit={handleRequestConsult} className="flex flex-col gap-3.5 mt-2 text-[12.5px]">
+                  <div className="flex flex-col gap-1">
+                    <label className="font-bold text-slate-600">Consultation Topic</label>
+                    <input required type="text" value={consultTopic} onChange={(e)=>setConsultTopic(e.target.value)} placeholder="Methodology neural network details..." className="bg-white border border-slate-350 rounded-lg p-2.5 focus:outline-none" />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="flex flex-col gap-1">
+                      <label className="font-bold text-slate-600">Preferred Date</label>
+                      <input required type="date" value={consultDate} onChange={(e)=>setConsultDate(e.target.value)} className="bg-white border border-slate-350 rounded-lg p-2.5 focus:outline-none" />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <label className="font-bold text-slate-600">Preferred Time</label>
+                      <input required type="text" value={consultTime} onChange={(e)=>setConsultTime(e.target.value)} placeholder="10:00 AM" className="bg-white border border-slate-350 rounded-lg p-2.5 focus:outline-none" />
+                    </div>
+                  </div>
+                  <button type="submit" className="px-4 py-2 bg-[#ffa400] text-[#1b4264] hover:bg-[#e09000] font-extrabold rounded-lg shadow border border-[#ffa400] self-start mt-2">
+                    Request Consultation
+                  </button>
+                </form>
+              </div>
+            ),
+            "consultation-repo": (
+              <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
+                <h3 className="font-extrabold text-[#1b4264] text-[16px]">Consultation Repository</h3>
+                <p className="text-[11px] text-slate-400 font-bold">Access historical transcripts, advisory notes, and recorded session indexes.</p>
+                <div className="flex flex-col gap-3 mt-2 text-[12px]">
+                  {consultations.map(c => (
+                    <div key={c.id} className="p-3 bg-slate-50 border border-slate-200 rounded-lg flex justify-between items-center shadow-sm">
+                      <div>
+                        <span className="font-bold text-[#1b4264] block">{c.topic}</span>
+                        <span className="text-[10px] text-slate-400">{c.date} · {c.time} ({c.mode})</span>
+                      </div>
+                      <Tag variant={c.status==='completed'?'success':'warn'}>{c.status}</Tag>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ),
+            progress: (
+              <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
+                <h3 className="font-extrabold text-[#1b4264] text-[16px]">Progress Tracking Dashboard</h3>
+                <p className="text-[11px] text-slate-400 font-bold">Visual status indicators showing project workflow completion.</p>
+                <div className="bg-slate-50 p-6 border border-slate-200 rounded-2xl mt-2 shadow-sm flex flex-col gap-4">
+                  <div className="flex justify-between items-center text-[13px] font-extrabold text-[#1b4264]">
+                    <span>Overall Study Progression</span>
+                    <span className="bg-[#1b4264]/10 text-[#1b4264] px-2.5 py-0.5 rounded text-[11px] font-extrabold font-mono">20% COMPLETE</span>
+                  </div>
+                  <div className="w-full bg-slate-200 rounded-full h-4 p-1 overflow-hidden border border-slate-300/40 shadow-inner flex items-center">
+                    <div 
+                      className="bg-gradient-to-r from-[#1b4264] to-[#ffa400] h-2.5 rounded-full transition-all duration-500 ease-out animate-pulse shadow-sm" 
+                      style={{ width: "20%" }} 
+                    />
+                  </div>
+                  <div className="text-[11px] text-slate-500 font-medium leading-relaxed mt-1 flex items-center gap-1.5">
+                    <i className="ti ti-info-circle text-[#1b4264]" />
+                    <span>Next Milestone: <strong>Chapter 1-3 Submission</strong>. Target deadline is July 15, 2026.</span>
+                  </div>
+                </div>
+              </div>
+            ),
+            defense: (
+              <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
+                <h3 className="font-extrabold text-[#1b4264] text-[16px]">Defense Schedule Viewing</h3>
+                <p className="text-[11px] text-slate-400 font-bold">Review defense panel timings, assignees, and digital venues.</p>
+                {defenses.map(d => (
+                  <div key={d.id} className="p-4 bg-slate-50 border border-slate-200 rounded-xl text-[12.5px] flex flex-col gap-2 mt-2 shadow-sm">
+                    <div className="flex justify-between items-center">
+                      <span className="font-extrabold text-[#1b4264] text-[14px]">{d.title}</span>
+                      <Tag variant="warn">{d.type}</Tag>
+                    </div>
+                    <div className="text-slate-500 font-medium">
+                      <div><strong>Date / Time:</strong> {d.date} at {d.time}</div>
+                      <div><strong>Venue:</strong> {d.venue}</div>
+                      <div><strong>Panelists:</strong> {d.panelists.join(", ")}</div>
+                    </div>
                   </div>
                 ))}
               </div>
-            </div>
-          </div>
-        )}
-
-        {/* TAB 6: GROUP CONFERENCING */}
-        {activeTab === "conferencing" && (
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
-            <h3 className="font-extrabold text-[#1b4264] text-[16px]">In-App Voice and Video Group Conferencing</h3>
-            <p className="text-[11px] text-slate-400 font-bold">Initiate peer study room conferences or sync appointments with advisers.</p>
-            <div className="p-6 border border-dashed border-[#1b4264]/20 bg-slate-50 rounded-2xl text-center flex flex-col gap-3 mt-2 shadow-inner">
-              <i className="ti ti-video text-4xl text-[#1b4264]" />
-              <div className="font-extrabold text-[14px] text-[#1b4264]">No active conference calls in progress</div>
-              <p className="text-[11.5px] text-slate-400 max-w-sm mx-auto font-medium">
-                Create a dynamic meeting room or click join to connect with your group members and assigned adviser.
-              </p>
-              <button 
-                onClick={() => setModalJoinConferencing(true)}
-                className="mt-2 px-5 py-2.5 bg-[#ffa400] hover:bg-[#e09000] text-[#1b4264] font-extrabold rounded-xl border border-[#ffa400] shadow mx-auto transition-transform active:scale-[0.98]"
-              >
-                Join Study Room Channel
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* TAB 7: DOCUMENT SUBMISSION */}
-        {activeTab === "submission" && (
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
-            <h3 className="font-extrabold text-[#1b4264] text-[16px]">Research Document Submission</h3>
-            <p className="text-[11px] text-slate-400 font-bold">Upload project milestone documents and chapter outlines.</p>
-            <form onSubmit={handleUploadDoc} className="flex flex-col gap-3 text-[12px] mt-2">
-              <div className="flex flex-col gap-1">
-                <label className="font-bold text-slate-600">Select Target Milestone</label>
-                <select value={uploadMilestone} onChange={(e)=>setUploadMilestone(e.target.value)} className="bg-white border border-slate-350 rounded-lg p-2 focus:outline-none">
-                  <option value="Proposal Outline">Proposal Outline</option>
-                  <option value="Draft Submission">Draft Submission (Chapter 1-3)</option>
-                  <option value="Ethics Application">Ethics Application Forms</option>
-                </select>
-              </div>
-              <div className="flex flex-col gap-1">
-                <label className="font-bold text-slate-600">Document File Name</label>
-                <input required type="text" value={uploadFileName} onChange={(e)=>setUploadFileName(e.target.value)} placeholder="e.g. AI Crop Yield Prediction Draft v2" className="bg-white border border-slate-350 rounded-lg p-2 focus:outline-none" />
-              </div>
-              <button type="submit" className="px-4 py-2 bg-[#ffa400] text-[#1b4264] hover:bg-[#e09000] font-extrabold rounded-lg shadow-sm border border-[#ffa400] self-start mt-2">
-                Submit Research Document
-              </button>
-            </form>
-          </div>
-        )}
-
-        {/* TAB 8: DOCUMENT VERSION CONTROL */}
-        {activeTab === "version-control" && (
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
-            <h3 className="font-extrabold text-[#1b4264] text-[16px]">Document Version Control & Tracking</h3>
-            <p className="text-[11px] text-slate-400 font-bold">Track approval milestones and download past research file iterations.</p>
-            <div className="overflow-x-auto mt-2">
-              <table className="w-full text-left border-collapse text-[12px]">
-                <thead>
-                  <tr className="border-b border-slate-200 text-[#1b4264] font-extrabold uppercase text-[10px] tracking-wider">
-                    <th className="py-2.5">File Name</th>
-                    <th className="py-2.5">Milestone</th>
-                    <th className="py-2.5">Version</th>
-                    <th className="py-2.5">Upload Date</th>
-                    <th className="py-2.5">Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {submissions.map(doc => (
-                    <tr key={doc.id} className="border-b border-slate-100 text-slate-650 hover:bg-slate-50 transition-colors">
-                      <td className="py-3 font-bold text-[#1b4264]">{doc.docName}</td>
-                      <td className="py-3">{doc.milestone}</td>
-                      <td className="py-3 font-mono">{doc.version}</td>
-                      <td className="py-3">{doc.date}</td>
-                      <td className="py-3">
-                        <Tag variant={doc.status==='approved'?'success':'warn'}>{doc.status}</Tag>
-                      </td>
-                    </tr>
+            ),
+            notifications: (
+              <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
+                <h3 className="font-extrabold text-[#1b4264] text-[16px]">Notifications & Announcements</h3>
+                <p className="text-[11px] text-slate-400 font-bold">Real-time alerts, chapter approvals, and institutional announcements.</p>
+                <div className="flex flex-col gap-3 mt-2">
+                  {notifications.map(n => (
+                    <div key={n.id} className="p-3 bg-slate-50 border border-slate-200 rounded-lg flex justify-between items-center text-[12px] shadow-sm">
+                      <div>
+                        <span className="font-bold text-[#1b4264] block">{n.msg}</span>
+                      </div>
+                      <span className="text-slate-400 font-bold text-[10.5px]">{n.date}</span>
+                    </div>
                   ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
-
-        {/* TAB 9: PROJECT MILESTONES */}
-        {activeTab === "milestones" && (
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
-            <h3 className="font-extrabold text-[#1b4264] text-[16px]">Project Milestone Monitoring</h3>
-            <p className="text-[11px] text-slate-400 font-bold">Monitor progression and target due dates for Outline, Pre-Defense, and Final Oral Defense.</p>
-            <div className="flex flex-col gap-3 mt-2">
-              {milestones.map(m => (
-                <div key={m.id} className="p-3 bg-slate-50 border border-slate-200 rounded-lg flex justify-between items-center text-[12.5px] shadow-sm">
+                </div>
+              </div>
+            ),
+            certificates: (
+              <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
+                <h3 className="font-extrabold text-[#1b4264] text-[16px]">Certificates of Completion</h3>
+                <p className="text-[11px] text-slate-400 font-bold">Access and download QR-verified Certificates of Completion.</p>
+                <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl text-[12.5px] flex items-center justify-between mt-2 shadow-sm">
                   <div>
-                    <span className="font-bold text-[#1b4264] block">{m.title}</span>
-                    <span className="text-[10px] text-slate-450 block">Target: {m.date}</span>
+                    <span className="font-bold text-[#1b4264] block">Certificate of Completion (Pending)</span>
+                    <span className="text-[10px] text-slate-400">Available once final oral grading has been submitted.</span>
                   </div>
-                  <Tag variant={m.status==='completed'?'success':m.status==='in-progress'?'warn':'info'}>{m.status}</Tag>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* TAB 10: CONSULTATION REQUESTS */}
-        {activeTab === "consultation-requests" && (
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
-            <h3 className="font-extrabold text-[#1b4264] text-[16px]">Consultation Scheduling Requests</h3>
-            <p className="text-[11px] text-slate-400 font-bold">Schedule advisory reviews and face-to-face appointments.</p>
-            <form onSubmit={handleRequestConsult} className="flex flex-col gap-3 text-[12px] mt-2">
-              <div className="flex flex-col gap-1">
-                <label className="font-bold text-slate-655">Consultation Topic</label>
-                <input required type="text" value={consultTopic} onChange={(e)=>setConsultTopic(e.target.value)} placeholder="e.g. Chapter 4 Data Analysis" className="bg-white border border-slate-350 rounded-lg p-2 focus:outline-none" />
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="flex flex-col gap-1">
-                  <label className="font-bold text-slate-655">Date</label>
-                  <input required type="date" value={consultDate} onChange={(e)=>setConsultDate(e.target.value)} className="bg-white border border-slate-350 rounded-lg p-2 focus:outline-none" />
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className="font-bold text-slate-655">Time</label>
-                  <input required type="text" value={consultTime} onChange={(e)=>setConsultTime(e.target.value)} placeholder="e.g. 10:00 AM" className="bg-white border border-slate-350 rounded-lg p-2 focus:outline-none" />
+                  <button 
+                    onClick={() => setModalCert(true)} 
+                    className="px-3.5 py-2 bg-[#ffa400] hover:bg-[#e09000] text-[#1b4264] font-extrabold rounded-lg border border-[#ffa400] shadow cursor-pointer transition-colors"
+                  >
+                    View Status
+                  </button>
                 </div>
               </div>
-              <button type="submit" className="px-4 py-2 bg-[#ffa400] text-[#1b4264] hover:bg-[#e09000] font-extrabold rounded-lg shadow-sm border border-[#ffa400] self-start mt-2">
-                Request Appointment
-              </button>
-            </form>
-          </div>
-        )}
-
-        {/* TAB 11: CONSULTATION REPOSITORY */}
-        {activeTab === "consultation-repo" && (
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
-            <h3 className="font-extrabold text-[#1b4264] text-[16px]">Consultation Documentation Repository</h3>
-            <p className="text-[11px] text-slate-400 font-bold">Oversight archives of consultation meeting notes and verified signature logs.</p>
-            <div className="flex flex-col gap-3.5 mt-2 text-[12px]">
-              {consultations.map(c => (
-                <div key={c.id} className="p-3 bg-slate-50 border border-slate-200 rounded-lg flex justify-between items-center shadow-sm">
-                  <div>
-                    <span className="font-bold text-[#1b4264] block">{c.topic}</span>
-                    <span className="text-[10px] text-slate-400">{c.date} · {c.time} ({c.mode})</span>
+            ),
+            settings: (
+              <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
+                <h3 className="font-extrabold text-[#1b4264] text-[16px]">Portal Settings</h3>
+                <p className="text-[11px] text-slate-400 font-bold">Manage your notification channels, authentication credentials, and user preferences.</p>
+                <div className="bg-slate-50 p-4 border border-slate-200 rounded-xl text-[12.5px] mt-2 flex flex-col gap-4 shadow-sm">
+                  <div className="flex justify-between items-center pb-3 border-b border-slate-200">
+                    <div>
+                      <span className="font-bold text-[#1b4264] block">Email Notifications</span>
+                      <span className="text-[10px] text-slate-400">Receive system notifications via email address.</span>
+                    </div>
+                    <input type="checkbox" defaultChecked className="accent-[#ffa400] w-4 h-4 cursor-pointer" />
                   </div>
-                  <Tag variant={c.status==='completed'?'success':'warn'}>{c.status}</Tag>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* TAB 12: PROGRESS TRACKING */}
-        {activeTab === "progress" && (
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
-            <h3 className="font-extrabold text-[#1b4264] text-[16px]">Progress Tracking Dashboard</h3>
-            <p className="text-[11px] text-slate-400 font-bold">Visual status indicators showing project workflow completion.</p>
-            <div className="bg-slate-50 p-4 border border-slate-200 rounded-xl mt-2 shadow-sm">
-              <div className="flex justify-between items-center mb-2 text-[12.5px] font-bold text-[#1b4264]">
-                <span>Overall Study Progression</span>
-                <span>20%</span>
-              </div>
-              <div className="progress-bar-track">
-                <div className="progress-bar-fill animate-pulse" style={{ width: "20%" }} />
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* TAB 13: DEFENSE SCHEDULE */}
-        {activeTab === "defense" && (
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
-            <h3 className="font-extrabold text-[#1b4264] text-[16px]">Defense Schedule Viewing</h3>
-            <p className="text-[11px] text-slate-400 font-bold">Review defense panel timings, assignees, and digital venues.</p>
-            {defenses.map(d => (
-              <div key={d.id} className="p-4 bg-slate-50 border border-slate-200 rounded-xl text-[12.5px] flex flex-col gap-2 mt-2 shadow-sm">
-                <div className="flex justify-between items-center">
-                  <span className="font-extrabold text-[#1b4264] text-[14px]">{d.title}</span>
-                  <Tag variant="warn">{d.type}</Tag>
-                </div>
-                <div className="text-slate-500 font-medium">
-                  <div><strong>Date / Time:</strong> {d.date} at {d.time}</div>
-                  <div><strong>Venue:</strong> {d.venue}</div>
-                  <div><strong>Panelists:</strong> {d.panelists.join(", ")}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* TAB 14: NOTIFICATIONS */}
-        {activeTab === "notifications" && (
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
-            <h3 className="font-extrabold text-[#1b4264] text-[16px]">Notifications & Announcements</h3>
-            <p className="text-[11px] text-slate-400 font-bold">Real-time alerts, chapter approvals, and institutional announcements.</p>
-            <div className="flex flex-col gap-3 mt-2">
-              {notifications.map(n => (
-                <div key={n.id} className="p-3 bg-slate-50 border border-slate-200 rounded-lg flex justify-between items-center text-[12px] shadow-sm">
-                  <div>
-                    <span className="font-bold text-[#1b4264] block">{n.msg}</span>
-                    <span className="text-[9px] px-1.5 py-0.5 rounded bg-[#1b4264]/5 font-extrabold text-[#1b4264] uppercase inline-block mt-0.5">{n.type}</span>
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <span className="font-bold text-[#1b4264] block">Dark Mode</span>
+                      <span className="text-[10px] text-slate-400">Switch platform styling theme to night vision.</span>
+                    </div>
+                    <input type="checkbox" className="accent-[#ffa400] w-4 h-4 cursor-pointer" />
                   </div>
-                  <span className="text-slate-400 font-bold text-[10.5px]">{n.date}</span>
                 </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* TAB 15: CERTIFICATES OF COMPLETION */}
-        {activeTab === "certificates" && (
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
-            <h3 className="font-extrabold text-[#1b4264] text-[16px]">Certificates of Completion</h3>
-            <p className="text-[11px] text-slate-400 font-bold">Access and download QR-verified Certificates of Completion.</p>
-            <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl text-[12.5px] flex items-center justify-between mt-2 shadow-sm">
-              <div>
-                <span className="font-bold text-[#1b4264] block">Certificate of Completion (Pending)</span>
-                <span className="text-[10px] text-slate-400">Available once final oral grading has been submitted.</span>
               </div>
-              <button 
-                onClick={() => setModalCert(true)} 
-                className="px-3.5 py-2 bg-[#ffa400] hover:bg-[#e09000] text-[#1b4264] font-extrabold rounded-lg border border-[#ffa400] shadow cursor-pointer transition-colors"
-              >
-                View Status
-              </button>
-            </div>
-          </div>
-        )}
+            ),
+          };
+
+          return tabContent[activeTab] || tabContent.overview;
+        })()}
 
       </main>
 

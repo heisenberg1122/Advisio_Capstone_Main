@@ -1,47 +1,80 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useNotifications } from "@/hooks/use-notifications";
+import { useProfile } from "@/hooks/use-profile";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 const PAGE_TITLES: Record<string, string> = {
-  "/student/dashboard":    "Dashboard",
-  "/student/groups":       "My group",
-  "/student/adviser-pool": "Adviser pool",
+  "/student/groups":       "My Group",
+  "/student/adviser-pool": "Adviser Pool",
   "/student/submissions":  "Submissions",
   "/student/consultations":"Consultations",
-  "/student/defense":      "Defense center",
+  "/student/defense":      "Defense Center",
   "/student/grades":       "Grades",
   "/student/notifications":"Notifications",
+  "/student/profile":      "My Profile",
+  "/student/profile/edit": "Edit Profile",
   "/student/settings":     "Settings",
 };
 
+const STUDENT_TAB_TITLES: Record<string, string> = {
+  overview: "Student Dashboard",
+  group: "Research Group Management",
+  milestones: "Project Milestones",
+  progress: "Progress Tracking",
+  submission: "Research Document Submission",
+  "version-control": "Document Version Control",
+  "adviser-credentials": "Adviser Credentials Hub",
+  "ai-recommendation": "AI Adviser Recommendation",
+  "consultation-requests": "Consultation Requests",
+  "consultation-repo": "Consultation Repository",
+  conferencing: "Group Conferencing",
+  defense: "Defense Schedule",
+  certificates: "Certificates of Completion",
+  settings: "Settings",
+};
+
 export function StudentTopbar() {
-  const pathname = usePathname();
-  const title = PAGE_TITLES[pathname] ?? "Dashboard";
+  const pathname = usePathname() || "";
+  const searchParams = useSearchParams();
+  const currentTab = searchParams.get("tab") || "overview";
+
+  let title = PAGE_TITLES[pathname] ?? "Student Dashboard";
+  if (pathname === "/student/dashboard") {
+    title = STUDENT_TAB_TITLES[currentTab] || "Student Dashboard";
+  }
+  const { unreadCount } = useNotifications();
+  const { profile } = useProfile();
 
   return (
     <header
-      className="h-[52px] flex-shrink-0 flex items-center justify-between px-6 border-b border-[var(--color-border-tertiary)]"
-      style={{ background: "var(--color-background-primary)" }}
+      className="h-[52px] flex-shrink-0 flex items-center justify-between px-6 border-b border-slate-200 bg-white"
     >
-      <div className="flex items-center gap-3">
-        <span
-          className="text-[13px] text-[var(--color-text-secondary)]"
-          aria-label="Current page"
-        >
-          <span className="text-[var(--color-text-primary)] font-medium">{title}</span>
-        </span>
-      </div>
+      <span className="text-[13px] font-medium text-slate-800" aria-label="Current page">{title}</span>
 
       <div className="flex items-center gap-2">
-        <button
-          className="icon-btn badge-dot"
-          aria-label="Notifications — you have unread notifications"
+        <Link
+          href="/student/notifications"
+          className={cn(
+            "relative p-2 rounded-full hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition",
+          )}
+          aria-label={unreadCount > 0 ? `Notifications — ${unreadCount} unread` : "Notifications"}
         >
           <i className="ti ti-bell text-base" aria-hidden="true" />
-        </button>
-        <button className="icon-btn" aria-label="Search">
-          <i className="ti ti-search text-base" aria-hidden="true" />
-        </button>
+          {unreadCount > 0 && (
+            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full" />
+          )}
+        </Link>
+        <Link
+          href="/student/profile"
+          className="w-8 h-8 rounded-full bg-[#1b4264] text-white flex items-center justify-center text-[11px] font-bold hover:opacity-90 transition flex-shrink-0"
+          title="My Profile"
+          aria-label="Go to my profile"
+        >
+          {profile?.initials || "ST"}
+        </Link>
       </div>
     </header>
   );
