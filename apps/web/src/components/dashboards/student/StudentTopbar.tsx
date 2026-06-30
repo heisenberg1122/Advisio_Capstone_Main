@@ -31,9 +31,11 @@ const STUDENT_TAB_TITLES: Record<string, string> = {
   "consultation-requests": "Consultation Requests",
   "consultation-repo": "Consultation Repository",
   conferencing: "Group Conferencing",
+  "group-chats": "Group Chats",
   defense: "Defense Schedule",
   certificates: "Certificates of Completion",
   settings: "Settings",
+  workspace: "Document Workspace (Editor)",
 };
 
 export function StudentTopbar() {

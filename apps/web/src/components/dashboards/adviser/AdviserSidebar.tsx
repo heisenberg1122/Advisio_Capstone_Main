@@ -32,6 +32,7 @@ const MENU_SECTIONS = [
       { label: "Consultation Schedule", href: "/adviser/dashboard?tab=consultations", tabName: "consultations", icon: "ti-calendar-event" },
       { label: "Consultation History", href: "/adviser/dashboard?tab=history", tabName: "history", icon: "ti-history" },
       { label: "Group Conferencing", href: "/adviser/dashboard?tab=conferencing", tabName: "conferencing", icon: "ti-video" },
+      { label: "Adviser Group Chats", href: "/adviser/dashboard?tab=group-chats", tabName: "group-chats", icon: "ti-messages" },
     ],
   },
   {

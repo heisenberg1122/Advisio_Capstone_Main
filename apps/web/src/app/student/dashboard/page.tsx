@@ -1,8 +1,11 @@
 "use client";
 
-import React, { useState, Suspense } from "react";
+import React, { useState, Suspense, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { Tag } from "@/components/ui/Tag";
+import { StudentGroupChats } from "@/components/dashboards/student/StudentGroupChats";
+import { StudentWorkspace } from "@/components/dashboards/student/StudentWorkspace";
+import { getChatStore } from "@/lib/chat-store";
 
 function StudentDashboardContent() {
   const searchParams = useSearchParams();
@@ -27,6 +30,24 @@ function StudentDashboardContent() {
     { id: "s2", docName: "Chapter 1-3 Review Draft v2", milestone: "Draft Submission", date: "2026-06-27", version: "v2.1", status: "pending" },
   ]);
 
+  const [workspaceSubmissions, setWorkspaceSubmissions] = useState<any[]>([]);
+
+  useEffect(() => {
+    const syncSubmissions = () => {
+      const stored = localStorage.getItem("advisio_student_submissions");
+      if (stored) {
+        try {
+          setWorkspaceSubmissions(JSON.parse(stored));
+        } catch (e) {}
+      }
+    };
+    syncSubmissions();
+    window.addEventListener("storage", syncSubmissions);
+    return () => window.removeEventListener("storage", syncSubmissions);
+  }, []);
+
+  const combinedSubmissions = [...workspaceSubmissions, ...submissions];
+
   const [consultations, setConsultations] = useState([
     { id: "c1", topic: "Methodology & Neural Network Architecture", date: "2026-07-03", time: "10:00 AM", mode: "Video Call", status: "pending" },
     { id: "c2", topic: "Introduction Outline Review", date: "2026-06-24", time: "02:00 PM", mode: "In-Person (CL3)", status: "completed" },
@@ -48,6 +69,26 @@ function StudentDashboardContent() {
     { id: "n1", msg: "Dr. Rachel Lim approved your outline version v1.0", date: "June 25, 2026", type: "system" },
     { id: "n2", msg: "Institutional Ethics Deadline scheduled for July 30", date: "June 24, 2026", type: "announcement" },
   ]);
+
+  const [chatStoreNotifications, setChatStoreNotifications] = useState<any[]>([]);
+
+  useEffect(() => {
+    const syncNotifs = () => {
+      const store = getChatStore();
+      const userNotifs = store.notifications.filter(
+        n => n.userId === "juan.reyes@university.edu.ph"
+      );
+      setChatStoreNotifications(userNotifs);
+    };
+    syncNotifs();
+    window.addEventListener("storage", syncNotifs);
+    return () => window.removeEventListener("storage", syncNotifs);
+  }, []);
+
+  const combinedNotifications = [
+    ...chatStoreNotifications.map(n => ({ id: n.id, msg: n.msg, date: n.date || "Just now", type: "system" })),
+    ...notifications
+  ];
 
   // Form input controllers
   const [topicInput, setTopicInput] = useState("");
@@ -166,7 +207,7 @@ function StudentDashboardContent() {
                     </div>
                     <div>
                       <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Submitted Documents</span>
-                      <span className="text-[15px] font-extrabold text-[#1b4264]">{submissions.length} Uploads</span>
+                      <span className="text-[15px] font-extrabold text-[#1b4264]">{combinedSubmissions.length} Uploads</span>
                     </div>
                   </div>
 
@@ -379,7 +420,7 @@ function StudentDashboardContent() {
                 <h3 className="font-extrabold text-[#1b4264] text-[16px]">Document Version Control</h3>
                 <p className="text-[11px] text-slate-400 font-bold">Monitor historical draft changes, track comments, and compare version indexes.</p>
                 <div className="flex flex-col gap-3.5 mt-2">
-                  {submissions.map(sub => (
+                  {combinedSubmissions.map(sub => (
                     <div key={sub.id} className="p-4 bg-slate-50 border border-slate-200 rounded-xl flex justify-between items-center text-[12.5px] shadow-sm">
                       <div>
                         <span className="font-bold text-[#1b4264] block">{sub.docName}</span>
@@ -495,7 +536,7 @@ function StudentDashboardContent() {
                 <h3 className="font-extrabold text-[#1b4264] text-[16px]">Notifications & Announcements</h3>
                 <p className="text-[11px] text-slate-400 font-bold">Real-time alerts, chapter approvals, and institutional announcements.</p>
                 <div className="flex flex-col gap-3 mt-2">
-                  {notifications.map(n => (
+                  {combinedNotifications.map(n => (
                     <div key={n.id} className="p-3 bg-slate-50 border border-slate-200 rounded-lg flex justify-between items-center text-[12px] shadow-sm">
                       <div>
                         <span className="font-bold text-[#1b4264] block">{n.msg}</span>
@@ -545,6 +586,12 @@ function StudentDashboardContent() {
                   </div>
                 </div>
               </div>
+            ),
+            "group-chats": (
+              <StudentGroupChats triggerToast={triggerToast} />
+            ),
+            workspace: (
+              <StudentWorkspace triggerToast={triggerToast} />
             ),
           };
 

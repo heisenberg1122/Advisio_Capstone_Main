@@ -26,6 +26,7 @@ const MENU_SECTIONS = [
     items: [
       { label: "Research Document Submission", href: "/student/dashboard?tab=submission", tabName: "submission", icon: "ti-upload" },
       { label: "Document Version Control", href: "/student/dashboard?tab=version-control", tabName: "version-control", icon: "ti-history" },
+      { label: "Document Workspace (Editor)", href: "/student/dashboard?tab=workspace", tabName: "workspace", icon: "ti-edit" },
     ],
   },
   {
@@ -41,6 +42,7 @@ const MENU_SECTIONS = [
       { label: "Consultation Requests", href: "/student/dashboard?tab=consultation-requests", tabName: "consultation-requests", icon: "ti-calendar-event" },
       { label: "Consultation Repository", href: "/student/dashboard?tab=consultation-repo", tabName: "consultation-repo", icon: "ti-folder" },
       { label: "Group Conferencing", href: "/student/dashboard?tab=conferencing", tabName: "conferencing", icon: "ti-video" },
+      { label: "Group Chats", href: "/student/dashboard?tab=group-chats", tabName: "group-chats", icon: "ti-messages" },
     ],
   },
   {
