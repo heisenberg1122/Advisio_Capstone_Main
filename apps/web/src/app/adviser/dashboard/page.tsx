@@ -1,8 +1,10 @@
 "use client";
 
-import React, { useState, Suspense } from "react";
+import React, { useState, Suspense, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { Tag } from "@/components/ui/Tag";
+import { AdviserGroupChats } from "@/components/dashboards/adviser/AdviserGroupChats";
+import { getChatStore } from "@/lib/chat-store";
 
 function AdviserDashboardContent() {
   const searchParams = useSearchParams();
@@ -31,6 +33,26 @@ function AdviserDashboardContent() {
     { id: "n1", msg: "Marc Santos uploaded Chapter 1-3 Review Draft v2.1", date: "2 hours ago" },
     { id: "n2", msg: "Lando Vance requested a consultation for July 5", date: "4 hours ago" },
   ]);
+
+  const [chatStoreNotifications, setChatStoreNotifications] = useState<any[]>([]);
+
+  useEffect(() => {
+    const syncNotifs = () => {
+      const store = getChatStore();
+      const userNotifs = store.notifications.filter(
+        n => n.userId === "rachel.lim@university.edu.ph"
+      );
+      setChatStoreNotifications(userNotifs);
+    };
+    syncNotifs();
+    window.addEventListener("storage", syncNotifs);
+    return () => window.removeEventListener("storage", syncNotifs);
+  }, []);
+
+  const combinedNotifications = [
+    ...chatStoreNotifications.map(n => ({ id: n.id, msg: n.msg, date: n.date || "Just now" })),
+    ...notifications
+  ];
 
   const [commentInput, setCommentInput] = useState("");
   const [toast, setToast] = useState<string | null>(null);
@@ -106,7 +128,7 @@ function AdviserDashboardContent() {
                     </div>
                     <div>
                       <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-extrabold">Notifications</span>
-                      <span className="text-[18px] font-extrabold text-[#1b4264]">{notifications.length} Alerts</span>
+                      <span className="text-[18px] font-extrabold text-[#1b4264]">{combinedNotifications.length} Alerts</span>
                     </div>
                   </div>
                 </div>
@@ -324,6 +346,9 @@ function AdviserDashboardContent() {
                   </div>
                 </div>
               </div>
+            ),
+            "group-chats": (
+              <AdviserGroupChats triggerToast={triggerToast} />
             ),
           };
 

@@ -15,9 +15,17 @@ function ProfessorDashboardContent() {
     { id: "p2", title: "Smart Traffic Management System", group: "Group IoT-IT-03", progress: 85, status: "for defense" },
   ]);
 
+  const [topics, setTopics] = useState([
+    { id: "top-1", name: "Capstone 1" },
+    { id: "top-2", name: "Capstone 2" },
+  ]);
+
   const [milestones, setMilestones] = useState([
-    { id: "m1", title: "Ethics Certification Clear", scope: "Compliance", order: 3, locked: false },
-    { id: "m2", title: "Chapter 4-5 Submission", scope: "Milestone", order: 4, locked: true },
+    { id: "m1", topicId: "top-1", title: "Proposal Title Selection", scope: "Milestone", locked: false, prerequisiteTaskId: "" },
+    { id: "m2", topicId: "top-1", title: "Chapter 1-3 Outline", scope: "Milestone", locked: false, prerequisiteTaskId: "m1" },
+    { id: "m3", topicId: "top-1", title: "Ethics Certification Clear", scope: "Compliance", locked: true, prerequisiteTaskId: "m2" },
+    { id: "m4", topicId: "top-2", title: "System Architecture Design", scope: "Milestone", locked: false, prerequisiteTaskId: "" },
+    { id: "m5", topicId: "top-2", title: "Final Defense Presentation", scope: "Milestone", locked: true, prerequisiteTaskId: "m4" },
   ]);
 
   const [workflowStatus, setWorkflowStatus] = useState("Active Track");
@@ -26,6 +34,9 @@ function ProfessorDashboardContent() {
   // Form input controllers
   const [newMilestoneTitle, setNewMilestoneTitle] = useState("");
   const [newMilestoneScope, setNewMilestoneScope] = useState("Milestone");
+  const [newTopicName, setNewTopicName] = useState("");
+  const [selectedTopicId, setSelectedTopicId] = useState("top-1");
+  const [prerequisiteTaskId, setPrerequisiteTaskId] = useState("");
 
   const [toast, setToast] = useState<string | null>(null);
   const triggerToast = (msg: string) => {
@@ -33,24 +44,44 @@ function ProfessorDashboardContent() {
     setTimeout(() => setToast(null), 3000);
   };
 
+  const handleCreateTopic = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newTopicName.trim()) return;
+    const newT = {
+      id: "top-" + Date.now(),
+      name: newTopicName.trim(),
+    };
+    setTopics(prev => [...prev, newT]);
+    setSelectedTopicId(newT.id);
+    setNewTopicName("");
+    triggerToast(`General topic "${newT.name}" successfully created.`);
+  };
+
   const handleCreateMilestone = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newMilestoneTitle.trim()) return;
     const newM = {
-      id: Math.random().toString(),
+      id: "m-" + Date.now(),
+      topicId: selectedTopicId,
       title: newMilestoneTitle,
       scope: newMilestoneScope,
-      order: milestones.length + 1,
       locked: false,
+      prerequisiteTaskId: prerequisiteTaskId || "",
     };
     setMilestones(prev => [...prev, newM]);
     setNewMilestoneTitle("");
-    triggerToast(`Custom milestone "${newM.title}" successfully created and appended.`);
+    setPrerequisiteTaskId("");
+    triggerToast(`Custom task "${newM.title}" successfully created.`);
   };
 
   const handleToggleTaskLock = (id: string, currentLock: boolean) => {
     setMilestones(prev => prev.map(m => m.id === id ? { ...m, locked: !currentLock } : m));
     triggerToast(!currentLock ? "Task access locked." : "Task access unlocked.");
+  };
+
+  const handleDeleteTask = (id: string) => {
+    setMilestones(prev => prev.filter(m => m.id !== id));
+    triggerToast("Task deleted successfully.");
   };
 
   return (
@@ -182,26 +213,184 @@ function ProfessorDashboardContent() {
               </div>
             ),
             builder: (
-              <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
-                <h3 className="font-extrabold text-[#1b4264] text-[16px]">Blank-Canvas Task Builder</h3>
-                <p className="text-[11px] text-slate-400 font-bold">Build custom research milestones and delegate requirements to selected colleges.</p>
-                <form onSubmit={handleCreateMilestone} className="flex flex-col gap-3 text-[12px] mt-2">
-                  <div className="flex flex-col gap-1">
-                    <label className="font-bold text-slate-600">Task Title</label>
-                    <input required type="text" value={newMilestoneTitle} onChange={(e) => setNewMilestoneTitle(e.target.value)} placeholder="e.g. Chapter 4 Data Visualization Outline" className="bg-white border border-slate-350 rounded-lg p-2 focus:outline-none" />
+              <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-5 text-slate-800">
+                <div>
+                  <h3 className="font-extrabold text-[#1b4264] text-[16px]">Blank-Canvas Task Builder</h3>
+                  <p className="text-[11px] text-slate-400 font-bold">Build custom research milestones, define pre-requisite lock constraints, and set dynamic curriculum routes.</p>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start mt-2">
+                  
+                  {/* Left Form Panel: 5 columns */}
+                  <div className="lg:col-span-5 flex flex-col gap-5">
+                    
+                    {/* General Topic Creator */}
+                    <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl flex flex-col gap-3">
+                      <h4 className="font-extrabold text-[#1b4264] text-[12.5px] flex items-center gap-1.5 border-b border-slate-200 pb-2">
+                        <i className="ti ti-plus text-[#ffa400]" />
+                        Create General Name / Topic
+                      </h4>
+                      <form onSubmit={handleCreateTopic} className="flex flex-col gap-2">
+                        <input
+                          required
+                          type="text"
+                          value={newTopicName}
+                          onChange={(e) => setNewTopicName(e.target.value)}
+                          placeholder="e.g. Capstone 1, Capstone 2..."
+                          className="bg-white border border-slate-350 rounded-lg p-2 text-[12px] focus:outline-none focus:border-[#ffa400]"
+                        />
+                        <button type="submit" className="w-full py-2 bg-[#ffa400] text-[#1b4264] hover:bg-[#e09000] font-extrabold rounded-lg border border-[#ffa400] text-[11px] cursor-pointer transition shadow-sm">
+                          Create Topic
+                        </button>
+                      </form>
+                    </div>
+
+                    {/* Task Deployer */}
+                    <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl flex flex-col gap-3">
+                      <h4 className="font-extrabold text-[#1b4264] text-[12.5px] flex items-center gap-1.5 border-b border-slate-200 pb-2">
+                        <i className="ti ti-target text-[#ffa400]" />
+                        Deploy Custom Milestone / Task
+                      </h4>
+                      <form onSubmit={handleCreateMilestone} className="flex flex-col gap-3 text-[12px]">
+                        <div className="flex flex-col gap-1">
+                          <label className="font-bold text-slate-500 text-[10px] uppercase">Target Topic</label>
+                          <select
+                            value={selectedTopicId}
+                            onChange={(e) => setSelectedTopicId(e.target.value)}
+                            className="bg-white border border-slate-350 rounded-lg p-2 focus:outline-none focus:border-[#ffa400]"
+                          >
+                            {topics.map(t => (
+                              <option key={t.id} value={t.id}>{t.name}</option>
+                            ))}
+                          </select>
+                        </div>
+
+                        <div className="flex flex-col gap-1">
+                          <label className="font-bold text-slate-500 text-[10px] uppercase">Task Title</label>
+                          <input
+                            required
+                            type="text"
+                            value={newMilestoneTitle}
+                            onChange={(e) => setNewMilestoneTitle(e.target.value)}
+                            placeholder="e.g. Chapter 4 Outline draft v1"
+                            className="bg-white border border-slate-350 rounded-lg p-2 focus:outline-none focus:border-[#ffa400]"
+                          />
+                        </div>
+
+                        <div className="flex flex-col gap-1">
+                          <label className="font-bold text-slate-500 text-[10px] uppercase">Task Scope</label>
+                          <select
+                            value={newMilestoneScope}
+                            onChange={(e) => setNewMilestoneScope(e.target.value)}
+                            className="bg-white border border-slate-350 rounded-lg p-2 focus:outline-none focus:border-[#ffa400]"
+                          >
+                            <option value="Milestone">Core Milestone</option>
+                            <option value="Compliance">Compliance Form</option>
+                            <option value="Pre-requisite">Pre-requisite Gate</option>
+                          </select>
+                        </div>
+
+                        <div className="flex flex-col gap-1">
+                          <label className="font-bold text-slate-500 text-[10px] uppercase">Pre-requisite Gate (Optional)</label>
+                          <select
+                            value={prerequisiteTaskId}
+                            onChange={(e) => setPrerequisiteTaskId(e.target.value)}
+                            className="bg-white border border-slate-350 rounded-lg p-2 focus:outline-none focus:border-[#ffa400]"
+                          >
+                            <option value="">-- No Pre-requisite --</option>
+                            {milestones
+                              .filter(m => m.topicId === selectedTopicId)
+                              .map(m => (
+                                <option key={m.id} value={m.id}>{m.title}</option>
+                              ))}
+                          </select>
+                        </div>
+
+                        <button type="submit" className="w-full py-2 bg-[#ffa400] text-[#1b4264] hover:bg-[#e09000] font-extrabold rounded-lg border border-[#ffa400] text-[11px] cursor-pointer transition shadow-sm">
+                          Deploy Task
+                        </button>
+                      </form>
+                    </div>
+
                   </div>
-                  <div className="flex flex-col gap-1">
-                    <label className="font-bold text-slate-600">Task Scope</label>
-                    <select value={newMilestoneScope} onChange={(e) => setNewMilestoneScope(e.target.value)} className="bg-white border border-slate-350 rounded-lg p-2 focus:outline-none">
-                      <option value="Milestone">Core Milestone</option>
-                      <option value="Compliance">Compliance Form</option>
-                      <option value="Pre-requisite">Pre-requisite Gate</option>
-                    </select>
+
+                  {/* Right View Panel: 7 columns */}
+                  <div className="lg:col-span-7 flex flex-col gap-4">
+                    <h4 className="font-extrabold text-[#1b4264] text-[13px] border-b border-slate-150 pb-2">
+                      Topic & Progression Sequence Maps
+                    </h4>
+                    
+                    <div className="flex flex-col gap-4 max-h-[460px] overflow-y-auto pr-1">
+                      {topics.map(topic => {
+                        const topicTasks = milestones.filter(m => m.topicId === topic.id);
+                        return (
+                          <div key={topic.id} className="border border-slate-200 rounded-xl p-4 bg-white shadow-sm flex flex-col gap-3">
+                            <div className="flex justify-between items-center border-b border-slate-100 pb-2">
+                              <span className="font-extrabold text-[#1b4264] text-[13px]">{topic.name}</span>
+                              <span className="text-[10px] text-slate-400 font-bold px-2 py-0.5 bg-slate-100 rounded-full">
+                                {topicTasks.length} tasks
+                              </span>
+                            </div>
+
+                            {topicTasks.length === 0 ? (
+                              <p className="text-[11px] text-slate-400 italic">No tasks created under this topic yet.</p>
+                            ) : (
+                              <div className="flex flex-col gap-2">
+                                {topicTasks.map(task => {
+                                  const prereq = milestones.find(m => m.id === task.prerequisiteTaskId);
+                                  return (
+                                    <div key={task.id} className="p-3 bg-slate-50 border border-slate-150 rounded-lg flex flex-col gap-1.5 text-[11.5px]">
+                                      <div className="flex justify-between items-start">
+                                        <div>
+                                          <span className="font-bold text-[#1b4264]">{task.title}</span>
+                                          <div className="flex gap-2 items-center mt-1">
+                                            <Tag variant={task.scope === "Milestone" ? "success" : task.scope === "Compliance" ? "info" : "warn"}>
+                                              {task.scope}
+                                            </Tag>
+                                            {prereq && (
+                                              <span className="text-[10px] text-slate-500 font-semibold flex items-center gap-1">
+                                                <i className="ti ti-arrow-right text-[10px]" /> Prereq: {prereq.title}
+                                              </span>
+                                            )}
+                                          </div>
+                                        </div>
+                                        
+                                        <div className="flex gap-2 items-center">
+                                          <button
+                                            type="button"
+                                            onClick={() => handleToggleTaskLock(task.id, task.locked)}
+                                            className={`px-2 py-1 text-[9.5px] font-extrabold rounded border cursor-pointer transition ${
+                                              task.locked
+                                                ? "bg-[#ffa400] text-[#1b4264] border-[#ffa400]"
+                                                : "bg-white border-slate-350 text-slate-600 hover:bg-slate-100"
+                                            }`}
+                                          >
+                                            {task.locked ? "Unlock" : "Lock"}
+                                          </button>
+                                          
+                                          <button
+                                            type="button"
+                                            onClick={() => handleDeleteTask(task.id)}
+                                            className="p-1 text-red-500 hover:bg-red-50 rounded transition cursor-pointer"
+                                            title="Delete Task"
+                                          >
+                                            <i className="ti ti-trash text-sm" />
+                                          </button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            )}
+
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
-                  <button type="submit" className="px-4 py-2 bg-[#ffa400] text-[#1b4264] hover:bg-[#e09000] font-extrabold rounded-lg shadow border border-[#ffa400] self-start mt-2">
-                    Deploy Task
-                  </button>
-                </form>
+
+                </div>
               </div>
             ),
             deployment: (
@@ -220,21 +409,39 @@ function ProfessorDashboardContent() {
               <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
                 <h3 className="font-extrabold text-[#1b4264] text-[16px]">Task-Locking & Milestone Constraints</h3>
                 <p className="text-[11px] text-slate-400 font-bold">Enforce strict research sequence constraints by locking tasks until pre-requisite indicators are met.</p>
-                <div className="flex flex-col gap-3 mt-2">
-                  {milestones.map(m => (
-                    <div key={m.id} className="p-3 bg-slate-50 border border-slate-200 rounded-lg flex justify-between items-center text-[12.5px] shadow-sm">
-                      <div>
-                        <span className="font-bold text-[#1b4264] block">{m.title}</span>
-                        <span className="text-[10px] text-slate-400">Status: {m.locked ? "Locked" : "Unlocked"}</span>
+                <div className="flex flex-col gap-5 mt-2">
+                  {topics.map(topic => {
+                    const topicTasks = milestones.filter(m => m.topicId === topic.id);
+                    return (
+                      <div key={topic.id} className="flex flex-col gap-2.5">
+                        <span className="font-extrabold text-[#1b4264] text-[12.5px] border-b border-slate-100 pb-1">{topic.name}</span>
+                        {topicTasks.length === 0 ? (
+                          <div className="text-[11px] text-slate-400 italic pl-1">No tasks configured under this topic.</div>
+                        ) : (
+                          topicTasks.map(m => (
+                            <div key={m.id} className="p-3 bg-slate-50 border border-slate-200 rounded-lg flex justify-between items-center text-[12.5px] shadow-sm">
+                              <div>
+                                <span className="font-bold text-[#1b4264] block">{m.title}</span>
+                                <span className="text-[10px] text-slate-400 block mt-0.5">
+                                  Scope: {m.scope} · Status: <strong>{m.locked ? "Locked" : "Unlocked"}</strong>
+                                </span>
+                              </div>
+                              <button
+                                onClick={() => handleToggleTaskLock(m.id, m.locked)}
+                                className={`px-3 py-1 font-bold text-[11px] rounded border cursor-pointer transition ${
+                                  m.locked
+                                    ? "bg-[#ffa400] text-[#1b4264] border-[#ffa400]"
+                                    : "bg-white border-slate-300 text-[#1b4264] hover:bg-slate-50"
+                                }`}
+                              >
+                                {m.locked ? "Unlock Task" : "Lock Task"}
+                              </button>
+                            </div>
+                          ))
+                        )}
                       </div>
-                      <button
-                        onClick={() => handleToggleTaskLock(m.id, m.locked)}
-                        className={`px-3 py-1 font-bold text-[11px] rounded border cursor-pointer ${m.locked ? 'bg-[#ffa400] text-[#1b4264] border-[#ffa400]' : 'bg-white border-slate-300 text-[#1b4264] hover:bg-slate-50'}`}
-                      >
-                        {m.locked ? "Unlock Task" : "Lock Task"}
-                      </button>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             ),

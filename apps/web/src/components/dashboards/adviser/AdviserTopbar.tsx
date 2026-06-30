@@ -26,6 +26,7 @@ const ADVISER_TAB_TITLES: Record<string, string> = {
   approvals: "Approval and Recommendation of Milestones",
   history: "Consultation History Records",
   conferencing: "Group Conferencing",
+  "group-chats": "Adviser Group Chats",
   defense: "Defense Schedule",
   settings: "Settings",
 };
